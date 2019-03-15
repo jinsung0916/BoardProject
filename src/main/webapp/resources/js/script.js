@@ -33,8 +33,7 @@ $(".moveToBoardDetail").on("click", function(e) {
 /* 
  * boardDetail.jsp의 modify 버튼 처리
  */
-// modify 버튼 초기 상태: 비활성화
-var isDisabled = true;
+var isDisabled = true; // modify 버튼 초기 상태: 비활성화
 
 function handleModifyBtn(){
 	 var title = $("#title"); 
