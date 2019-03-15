@@ -6,6 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,10 +36,15 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/board")
 @Slf4j
+@PropertySource("classpath:/properties/pagination.properties")
 public class BoardController {
-    private static final String BASE_UPLOAD_FOLDER = "D:/upload/";
-    private static final int DEFAULT_PAGE = 1;
-    private static final int DEFAUL_STATIC_ITEMS_PER_PAGE = 10;
+    // TODO 자바 파일에서 properties 읽어오지 못하는 버그 수정
+    @Value("${file.baseUploadFolder}")
+    private static String baseUploadFolder;
+    @Value("${pagination.defaultPage}")
+    private static int defaultPage;
+    @Value("${pagination.defaultItemsPerPage}")
+    private static int defaultItemsPerPage;
 
     @Autowired
     private BoardService service;
@@ -50,8 +57,11 @@ public class BoardController {
      */
     @RequestMapping("/list")
     public String BoardList(Integer page, Integer itemsPerPage, Model model) {
-	page = (page == null)? DEFAULT_PAGE : page;
-	itemsPerPage = (itemsPerPage == null) ? DEFAUL_STATIC_ITEMS_PER_PAGE : itemsPerPage;
+	log.info("defaultPage: {}", defaultPage);
+	log.info("defaultItemsPerPage: {}", defaultItemsPerPage);
+	
+	page = (page == null)? defaultPage : page;
+	itemsPerPage = (itemsPerPage == null) ? defaultItemsPerPage : itemsPerPage;
 	
 	PageDTO<BoardDTO> pageObj = service.findPaginated(page, itemsPerPage);
 	model.addAttribute("pageObj", pageObj);
@@ -121,6 +131,7 @@ public class BoardController {
     @GetMapping("/download")
     @ResponseBody
     public ResponseEntity<Resource> downloadFiles(@RequestParam("uuid") String uuid) {
+	// TODO POST 방식으로 파라미터를 읽어오도록 변경
 	FileDTO file = service.getFileByUUID(uuid);
 	String absoluteFilePath = file.toString();
 	Resource resource = FileDownloadHandler.downloadFile(absoluteFilePath);
@@ -146,7 +157,7 @@ public class BoardController {
     private void fileUploadProcess(BoardDTO board, MultipartFile[] uploadFile) {
 	if (!FileUploadHandler.isEmpty(uploadFile)) {
 	    // 업로드 파일이 존재할 때
-	    List<FileDTO> list = FileUploadHandler.uploadFile(uploadFile, BASE_UPLOAD_FOLDER);
+	    List<FileDTO> list = FileUploadHandler.uploadFile(uploadFile, baseUploadFolder);
 	    for(FileDTO file : list) {
 		// FileDTO에 Foreign Key 할당 후 DB에 저장한다.
 		file.setBoardNo(board.getNo());
