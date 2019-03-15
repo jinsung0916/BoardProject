@@ -1,0 +1,34 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.joins.myapp.persistence.BoardMapper">
+	
+    <select id="countAll" resultType="int">
+        SELECT count(*) FROM board
+    </select>
+
+    <select id="findByNo" parameterType="long" resultType="board">
+        select * from board where no = #{no};
+    </select>
+	
+	<select id="findPagenated" resultType="board">
+       SELECT no, title, regDate FROM board ORDER BY no DESC LIMIT #{startIndex}, #{itemsPerPage}
+    </select>
+	
+	<insert id="insert" parameterType="board" useGeneratedKeys="true" keyProperty="no" keyColumn="NO">
+        INSERT INTO board (title, contents, regDate)
+        VALUES (#{title}, #{contents}, #{regDate})
+    </insert>
+    
+    <update id="update" parameterType="board">
+        UPDATE board SET
+            title = #{title},
+            contents = #{contents},
+            regDate = #{regDate}
+        WHERE no = #{no}
+    </update>
+    
+    <delete id="delete" parameterType="long">
+    	DELETE FROM board
+    	WHERE no = #{no}
+    </delete>
+
+</mapper>
