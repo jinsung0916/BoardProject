@@ -100,7 +100,6 @@ public class BoardController {
     @PostMapping("/update")
     @ResponseBody
     public ResponseEntity<Integer> boardUpdate(BoardDTO board, MultipartFile[] uploadFile, int page) {
-	// TODO boardDetail.jsp 에서 페이지 번호를 전달받은 후 ajax 요청 성공 시 전달
 	ResponseEntity<Integer> result = null;
 	if (service.update(board)) {
 	    // 업데이트가 성공할 때
