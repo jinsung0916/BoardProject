@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,15 +35,13 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/board")
 @Slf4j
-@PropertySource("classpath:/properties/pagination.properties")
 public class BoardController {
-    // TODO 자바 파일에서 properties 읽어오지 못하는 버그 수정
-    @Value("${file.baseUploadFolder}")
-    private static String baseUploadFolder;
-    @Value("${pagination.defaultPage}")
-    private static int defaultPage;
-    @Value("${pagination.defaultItemsPerPage}")
-    private static int defaultItemsPerPage;
+    @Value("#{file['baseUploadFolder']}")
+    private String baseUploadFolder;
+    @Value("#{pagination['defaultPage']}")
+    private int defaultPage;
+    @Value("#{pagination['defaultItemsPerPage']}")
+    private int defaultItemsPerPage;
 
     @Autowired
     private BoardService service;

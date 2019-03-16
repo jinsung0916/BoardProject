@@ -20,16 +20,16 @@ public class BoardMapperTest {
     @Autowired
     private BoardMapper boardMapper;
 
-//    @Test
-//    public void testInsert() {
-//	BoardDTO board = new BoardDTO();
-//
-//	board.setTitle("테스트");
-//	board.setContents("테스트");
-//	boardMapper.insert(board);
-//	log.info(board.toString());
-//
-//    }
+    @Test
+    public void testInsert() {
+	BoardDTO board = new BoardDTO();
+
+	board.setTitle("테스트");
+	board.setContents("테스트");
+	boardMapper.insert(board);
+	log.info(board.toString());
+
+    }
 
     @Test
     public void testFindByNo() {
