@@ -2,15 +2,28 @@
 <mapper namespace="com.joins.myapp.persistence.BoardMapper">
 	
     <select id="countAll" resultType="int">
-        SELECT count(*) FROM board
+        SELECT count(*) 
+        FROM board
     </select>
 
     <select id="findByNo" parameterType="long" resultType="board">
-        select * from board where no = #{no};
+        select * from board 
+        where no = #{no};
     </select>
 	
 	<select id="findPagenated" resultType="board">
-       SELECT no, title, regDate FROM board ORDER BY no DESC LIMIT #{startIndex}, #{itemsPerPage}
+       SELECT no, title, regDate 
+       FROM board 
+       ORDER BY no DESC 
+       LIMIT #{startIndex}, #{itemsPerPage}
+    </select>
+    
+    <select id="findByDateAndTitle" resultType="board">
+       SELECT no, title, regDate 
+       FROM board 
+       WHERE regDate between #{startDate} AND #{endDate}
+       	 AND title like '%#{title}%"
+       ORDER BY no DESC
     </select>
 	
 	<insert id="insert" parameterType="board" useGeneratedKeys="true" keyProperty="no" keyColumn="NO">
