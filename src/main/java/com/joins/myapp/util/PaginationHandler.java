@@ -18,7 +18,4 @@ public class PaginationHandler {
 	return pageObj;
     }
     
-    public static String generatePageJSP() {
-	return null;
-    }
 }
