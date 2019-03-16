@@ -22,12 +22,13 @@ public class BoardServiceImpl implements BoardService {
     
     /**
      * 1. 개요:
-     * 2. 처리내용: 게시글 PK를 통해 게시글 하나를 찾아 반환한다.
+     * 2. 처리내용: 게시글 PK로 게시글 하나를 조회하여 반환한다.
      * 3. 입력 Data: 게시글 PK
      * 4. 출력 Data: 게시글
      */
     @Override
     public BoardDTO findOne(long id) {
+	// TODO 조인으로 세부정보를 조회하도록 수정
 	BoardDTO board = boardMapper.findByNo(id);
 	List<FileDTO> fileList = fileMapper.findByBoardNo(id);
 	board.setFileList(fileList);
@@ -49,11 +50,13 @@ public class BoardServiceImpl implements BoardService {
 	int totalPages = (int) Math.ceil((totalSizeOfTable * 1.0) / itemsPerPage);
 	int endPage = (int) Math.ceil((page * 1.0) / PAGES_PER_ONE_LINE) * PAGES_PER_ONE_LINE;
 	int startPage = endPage - PAGES_PER_ONE_LINE + 1;
-	endPage = Math.min(endPage, totalPages);
-
+	
 	boolean prev = startPage > 1;
 	boolean next = endPage < totalPages;
 
+	startPage = Math.max(startPage, 1);
+	endPage = Math.min(endPage, totalPages);
+	
 	PageDTO<BoardDTO> pageObj = new PageDTO<BoardDTO>(boards, itemsPerPage, page, startPage, endPage, prev, next);
 	return pageObj;
     }

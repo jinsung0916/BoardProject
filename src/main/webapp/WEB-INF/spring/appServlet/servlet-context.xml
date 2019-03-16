@@ -21,6 +21,7 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
+	<!-- multipartResolver 파일업로드 설정 -->
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<beans:property name="defaultEncoding" value="utf-8" /> 
 		<beans:property name="maxUploadSize" value="104857560" /> <!-- 10MB -->

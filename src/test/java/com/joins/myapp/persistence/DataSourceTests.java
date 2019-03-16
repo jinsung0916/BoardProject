@@ -24,7 +24,7 @@ public class DataSourceTests {
 	@Test
 	public void testConnectioin() {
 
-		try (Connection conn = dataSource.getConnection()) {
+	    try (Connection conn = dataSource.getConnection()) {
 			log.info("dataSource succesfully created");
 		} catch (Exception e) {
 			fail(e.getMessage());
