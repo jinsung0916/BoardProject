@@ -42,7 +42,9 @@ public class BoardController {
     private int defaultPage;
     @Value("#{pagination['defaultItemsPerPage']}")
     private int defaultItemsPerPage;
-
+    @Value("#{pagination['defaultPagesPerOneLine']}")
+    private int defaultPagesPerOneLine;
+    
     @Autowired
     private BoardService service;
     
@@ -53,14 +55,10 @@ public class BoardController {
      * 4. 출력 Data: 
      */
     @RequestMapping("/list")
-    public String BoardList(Integer page, Integer itemsPerPage, Model model) {
-	log.info("defaultPage: {}", defaultPage);
-	log.info("defaultItemsPerPage: {}", defaultItemsPerPage);
-	
+    public String BoardList(Integer page, Model model) {
 	page = (page == null)? defaultPage : page;
-	itemsPerPage = (itemsPerPage == null) ? defaultItemsPerPage : itemsPerPage;
 	
-	PageDTO<BoardDTO> pageObj = service.findPaginated(page, itemsPerPage);
+	PageDTO<BoardDTO> pageObj = service.findPaginated(page, defaultItemsPerPage, defaultPagesPerOneLine);
 	model.addAttribute("pageObj", pageObj);
 	return "board/boardList";
     }

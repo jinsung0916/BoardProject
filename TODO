@@ -4,7 +4,7 @@
 !. logback cron 확인
 !. JSP 파일은 WEB-INF 아래
 !. 람다 x 
-6. 파일 저장 경로 properties로 관리
+!. 파일 저장 경로 properties로 관리
 7. 페이징 리펙토링 (페이징 html 모델로 그려서 전달, 공통부분 코드 유틸로 분리)
 8. 검색기능 구현 (날짜설정, 제목 내용)
 9. 예외처리(page번호, html 삽입...)

@@ -23,12 +23,13 @@ public class BoardMapperTest {
     @Test
     public void testInsert() {
 	BoardDTO board = new BoardDTO();
-
-	board.setTitle("테스트");
-	board.setContents("테스트");
-	boardMapper.insert(board);
-	log.info(board.toString());
-
+	
+	for(int i=1; i<200; i++) {
+	    board.setTitle(i+"번째 제목");
+	    board.setContents(i+"번쨰 내용");
+	    boardMapper.insert(board);
+	    log.info(board.toString());
+	}
     }
 
     @Test

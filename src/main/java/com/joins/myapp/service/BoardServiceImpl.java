@@ -10,10 +10,10 @@ import com.joins.myapp.domain.FileDTO;
 import com.joins.myapp.domain.PageDTO;
 import com.joins.myapp.persistence.BoardMapper;
 import com.joins.myapp.persistence.FileMapper;
+import com.joins.myapp.util.PaginationHandler;
 
 @Service
 public class BoardServiceImpl implements BoardService {
-    public static final int PAGES_PER_ONE_LINE = 5;
 
     @Autowired
     private BoardMapper boardMapper;
@@ -42,22 +42,14 @@ public class BoardServiceImpl implements BoardService {
      * 4. 출력 Data: 게시글 리스트
      */
     @Override
-    public PageDTO<BoardDTO> findPaginated(int page, int itemsPerPage) {
+    public PageDTO<BoardDTO> findPaginated(int page, int itemsPerPage, int pagesPerOneLine) {
+	int totalSizeOfTable = boardMapper.countAll();
+	PageDTO<BoardDTO> pageObj = PaginationHandler.generatePageDTO(page, itemsPerPage, pagesPerOneLine, totalSizeOfTable);
+	
 	int startIndex = (page - 1) * itemsPerPage;
 	List<BoardDTO> boards = boardMapper.findPagenated(startIndex, itemsPerPage);
-
-	int totalSizeOfTable = boardMapper.countAll();
-	int totalPages = (int) Math.ceil((totalSizeOfTable * 1.0) / itemsPerPage);
-	int endPage = (int) Math.ceil((page * 1.0) / PAGES_PER_ONE_LINE) * PAGES_PER_ONE_LINE;
-	int startPage = endPage - PAGES_PER_ONE_LINE + 1;
+	pageObj.setContents(boards);
 	
-	boolean prev = startPage > 1;
-	boolean next = endPage < totalPages;
-
-	startPage = Math.max(startPage, 1);
-	endPage = Math.min(endPage, totalPages);
-	
-	PageDTO<BoardDTO> pageObj = new PageDTO<BoardDTO>(boards, itemsPerPage, page, startPage, endPage, prev, next);
 	return pageObj;
     }
     
