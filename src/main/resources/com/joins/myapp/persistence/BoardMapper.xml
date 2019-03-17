@@ -11,19 +11,25 @@
         where no = #{no};
     </select>
 	
-	<select id="findPagenated" resultType="board">
+	<select id="findPagenated" parameterType="searchInfo" resultType="board">
        SELECT no, title, regDate 
        FROM board 
        ORDER BY no DESC 
-       LIMIT #{startIndex}, #{itemsPerPage}
+       LIMIT #{startIdx}, #{itemsPerPage}
     </select>
     
-    <select id="findByDateAndTitle" resultType="board">
+    <select id="findPagenatedByDateAndTitle" parameterType="searchInfo" resultType="board">
        SELECT no, title, regDate 
        FROM board 
-       WHERE regDate between #{startDate} AND #{endDate}
-       	 AND title like '%#{title}%"
-       ORDER BY no DESC
+       WHERE title like '%#{search}%'
+       ORDER BY regDate DESC
+    </select>
+    
+	<select id="findPagenatedByDateAndContents" parameterType="searchInfo" resultType="board">
+       SELECT no, title, regDate 
+       FROM board 
+       WHERE contents like '%#{search}%'
+       ORDER BY regDate DESC
     </select>
 	
 	<insert id="insert" parameterType="board" useGeneratedKeys="true" keyProperty="no" keyColumn="NO">

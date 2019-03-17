@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.joins.myapp.domain.BoardDTO;
 import com.joins.myapp.domain.FileDTO;
 import com.joins.myapp.domain.PageDTO;
+import com.joins.myapp.domain.SearchInfoDTO;
 import com.joins.myapp.service.BoardService;
 import com.joins.myapp.util.FileDownloadHandler;
 import com.joins.myapp.util.FileUploadHandler;
@@ -55,10 +56,14 @@ public class BoardController {
      * 4. 출력 Data: 
      */
     @RequestMapping("/list")
-    public String BoardList(Integer page, Model model) {
-	page = (page == null)? defaultPage : page;
+    public String BoardList(Integer page, SearchInfoDTO searchInfo, Model model) {
+	if(page == null) {
+	    // GET으로 접근 시 기본 페이지를 반환한다. 
+	    page = defaultPage;
+	}
 	
-	PageDTO<BoardDTO> pageObj = service.findPaginated(page, defaultItemsPerPage, defaultPagesPerOneLine);
+	PageDTO<BoardDTO> pageObj = service.findPaginated(page, defaultItemsPerPage, 
+		defaultItemsPerPage, searchInfo);
 	model.addAttribute("pageObj", pageObj);
 	return "board/boardList";
     }

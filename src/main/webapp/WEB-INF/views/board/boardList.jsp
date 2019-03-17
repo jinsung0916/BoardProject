@@ -12,13 +12,21 @@
 </head>
 	
 <body>
-	<div align="center" style="width:50%">
-		<div align="left">
-			
-		</div>
-		
-		<div align="right">
-			<a href="/myapp/board/create"><button>작성하기</button></a>
+	<div align="center" style="width:70%">
+		<div>
+			<div align="left">
+				<form method="POST" action="">
+					<input type="date" name="startDate"/>~
+					<input type="date" name="endDate"/>
+					<input type="search" name="search">
+					<input type="radio" name="choose" value="title">제목
+	 	 			<input type="radio" name="choose" value="contents">내용
+					<input type="submit" value="검색">
+				</form>
+			</div>
+			<div align="right">
+				<a href="/myapp/board/create"><button>작성하기</button></a>
+			</div>	
 		</div>
 		
 		<table border="1" style="width:100%">

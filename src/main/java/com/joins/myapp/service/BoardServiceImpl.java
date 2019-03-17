@@ -8,13 +8,14 @@ import org.springframework.stereotype.Service;
 import com.joins.myapp.domain.BoardDTO;
 import com.joins.myapp.domain.FileDTO;
 import com.joins.myapp.domain.PageDTO;
+import com.joins.myapp.domain.SearchInfoDTO;
 import com.joins.myapp.persistence.BoardMapper;
 import com.joins.myapp.persistence.FileMapper;
 import com.joins.myapp.util.PaginationHandler;
 
 @Service
 public class BoardServiceImpl implements BoardService {
-
+    
     @Autowired
     private BoardMapper boardMapper;
     @Autowired
@@ -38,18 +39,32 @@ public class BoardServiceImpl implements BoardService {
     /**
      * 1. 개요:
      * 2. 처리내용: 페이징된 게시글 리스트를 반환한다.
-     * 3. 입력 Data: 페이지 번호, 페이지 당 게시글 수
+     * 3. 입력 Data: 게시글 조회 정보
      * 4. 출력 Data: 게시글 리스트
      */
     @Override
-    public PageDTO<BoardDTO> findPaginated(int page, int itemsPerPage, int pagesPerOneLine) {
+    public PageDTO<BoardDTO> findPaginated(int page, int itemsPerPage, int PagesPerOneLine, SearchInfoDTO searchInfo) {
+	// mariaDB LIMIT절 조건 설정
+	int startIdx = (page - 1) * itemsPerPage;
+	searchInfo.setStartIdx(startIdx);
+	
+	List<BoardDTO> boards = null;
+	String choose = searchInfo.getChoose();
+	if("title".equals(choose)) {
+	    // 검색조건이 '제목'일 때
+	    boards = boardMapper.findPagenatedByDateAndTitle(searchInfo);
+	} else if("contents".equals(choose)) {
+	    // 검색조건이 '내용'일 때
+	    boards = boardMapper.findPagenatedByDateAndContents(searchInfo);
+	} else {
+	    // 검색조건이 존재하지 않을 때
+	    boards = boardMapper.findPagenated(searchInfo);
+	}
+
 	int totalSizeOfTable = boardMapper.countAll();
-	PageDTO<BoardDTO> pageObj = PaginationHandler.generatePageDTO(page, itemsPerPage, pagesPerOneLine, totalSizeOfTable);
-	
-	int startIndex = (page - 1) * itemsPerPage;
-	List<BoardDTO> boards = boardMapper.findPagenated(startIndex, itemsPerPage);
-	pageObj.setContents(boards);
-	
+	PageDTO<BoardDTO> pageObj = PaginationHandler.generatePageDTO(page, itemsPerPage, 
+		PagesPerOneLine, totalSizeOfTable);
+	pageObj.setContents(boards);	
 	return pageObj;
     }
     
