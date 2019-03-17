@@ -13,6 +13,10 @@
 	
 <body>
 	<div align="center" style="width:50%">
+		<div align="left">
+			
+		</div>
+		
 		<div align="right">
 			<a href="/myapp/board/create"><button>작성하기</button></a>
 		</div>

@@ -1,5 +1,5 @@
 /*
- * boardList.jsp 에서 페이지 링크를 클릭했을 때 POST 요청이 이루어지도록 이벤트 처리
+ * pagination.jsp 에서 페이지 링크를 클릭했을 때 POST 요청이 이루어지도록 이벤트 처리
  */
 function moveToOtherPage(page){
 	$("body").append("<form id='hiddenForm' method='POST' action='/myapp/board/list'>");
@@ -64,7 +64,7 @@ $("#modifyBtn").on("click", function(e){
 });
 
 /*
- * formData(multipart/form-data)를 받아 지정된 url에 ajax 요청
+ * boardDetail.jsp의 formData(multipart/form-data)를 받아 지정된 url에 ajax 요청
  */
 function multipartFormAjaxCall(url, formData){
 	  $.ajax({

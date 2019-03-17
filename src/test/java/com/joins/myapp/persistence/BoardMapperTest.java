@@ -24,9 +24,10 @@ public class BoardMapperTest {
     public void testInsert() {
 	BoardDTO board = new BoardDTO();
 	
-	for(int i=1; i<200; i++) {
-	    board.setTitle(i+"번째 제목");
-	    board.setContents(i+"번쨰 내용");
+	for(int i=1; i<=200; i++) {
+	    board.setTitle(i + "번째 테스트");
+	    board.setContents(i + "번째 테스트");
+	    board.setRegDate(new Date());
 	    boardMapper.insert(board);
 	    log.info(board.toString());
 	}
