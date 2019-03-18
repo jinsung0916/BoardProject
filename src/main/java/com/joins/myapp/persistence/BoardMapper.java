@@ -2,17 +2,16 @@ package com.joins.myapp.persistence;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.joins.myapp.domain.BoardDTO;
+import com.joins.myapp.domain.SearchInfoDTO;
 
 public interface BoardMapper {
-    int countAll();
+    int countAll(SearchInfoDTO searchInfo);
 
     BoardDTO findByNo(long id);
 
-    List<BoardDTO> findPagenated(@Param("startIndex") int startIndex, @Param("itemsPerPage") int itemsPerPage);
-
+    List<BoardDTO> findPagenated(SearchInfoDTO searchInfo);
+    
     int insert(BoardDTO board);
 
     int update(BoardDTO board);

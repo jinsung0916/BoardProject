@@ -12,9 +12,29 @@
 </head>
 	
 <body>
-	<div align="center" style="width:50%">
-		<div align="right">
-			<a href="/myapp/board/create"><button>작성하기</button></a>
+	<div align="center" style="width:70%">
+		<div>
+			<div align="left">
+				<form id="searchForm" method="POST" action="/myapp/board/list">
+					<input type="date" name="startDate" value="${pageObj.searchInfo.startDate}"/>~
+					<input type="date" name="endDate" value="${pageObj.searchInfo.endDate}"/>
+					<input type="search" name="search" value="${pageObj.searchInfo.search}">
+					<c:choose>
+						<c:when test="${pageObj.searchInfo.choose == 'contents'}">
+							<input type="radio" name="choose" value="title">제목
+	 	 					<input type="radio" name="choose" value="contents" checked>내용
+						</c:when>
+						<c:otherwise>
+							<input type="radio" name="choose" value="title" checked>제목
+	 	 					<input type="radio" name="choose" value="contents">내용
+						</c:otherwise>
+					</c:choose>
+					<input type="submit" value="검색">
+				</form>
+			</div>
+			<div align="right">
+				<a href="/myapp/board/create"><button>작성하기</button></a>
+			</div>	
 		</div>
 		
 		<table border="1" style="width:100%">
@@ -35,6 +55,14 @@
 	
 		<jsp:include page="../pagination.jsp"></jsp:include>
 	</div>
+	
+	<form id="moveToBoardDetailForm" method="POST" action='/myapp/board/detail' style="display:none" >
+		<input type='hidden' name='page' value="${pageObj.searchInfo.page}">
+		<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
+		<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
+		<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
+		<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
+	</form>
 	
 	<script src="/myapp/resources/js/script.js"></script>
 </body>

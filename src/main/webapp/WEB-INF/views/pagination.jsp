@@ -6,15 +6,27 @@
 	<a class="moveToOtherPage" href="${pageObj.startPage-1}">&lt&lt</a>
 </c:if>
 <c:forEach var="num" begin="${pageObj.startPage}" end="${pageObj.endPage}">
-	<c:choose>
-		<c:when test="${num == pageObj.currentPage}">
-			<a id="currentPage">${num}</a>
-		</c:when>
-		<c:otherwise>
-			<a class="moveToOtherPage" href="${num}">${num}</a>
-		</c:otherwise>
-	</c:choose>
+	<a class="moveToOtherPage" href="${num}">${num}</a>
 </c:forEach>	
 <c:if test="${pageObj.next}">
 	<a class="moveToOtherPage" href="${pageObj.endPage+1}">&gt&gt</a>
 </c:if>
+
+<form id="moveToOtherPageForm" method="POST" action='/myapp/board/list' style="display:none" >
+		<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
+		<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
+		<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
+		<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
+</form>
+
+<script>
+	/*
+	 * pagination.jsp 에서 페이지 링크를 클릭했을 때 POST 요청이 이루어지도록 이벤트 처리
+	 */
+	$(".moveToOtherPage").on("click", function(e) {
+		e.preventDefault();
+		var page = $(this).attr("href");
+		$("#moveToOtherPageForm").append("<input type='hidden' name='page' value=" + page + ">");
+		$("#moveToOtherPageForm").submit(); 
+	});
+</script>
