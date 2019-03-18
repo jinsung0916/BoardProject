@@ -19,8 +19,16 @@
 					<input type="date" name="startDate" value="${pageObj.searchInfo.startDate}"/>~
 					<input type="date" name="endDate" value="${pageObj.searchInfo.endDate}"/>
 					<input type="search" name="search" value="${pageObj.searchInfo.search}">
-					<input type="radio" name="choose" value="title">제목
-	 	 			<input type="radio" name="choose" value="contents">내용
+					<c:choose>
+						<c:when test="${pageObj.searchInfo.choose == 'contents'}">
+							<input type="radio" name="choose" value="title">제목
+	 	 					<input type="radio" name="choose" value="contents" checked>내용
+						</c:when>
+						<c:otherwise>
+							<input type="radio" name="choose" value="title" checked>제목
+	 	 					<input type="radio" name="choose" value="contents">내용
+						</c:otherwise>
+					</c:choose>
 					<input type="submit" value="검색">
 				</form>
 			</div>

@@ -1,18 +1,4 @@
 /*
- * pagination.jsp 에서 페이지 링크를 클릭했을 때 POST 요청이 이루어지도록 이벤트 처리
- */
-$(".moveToOtherPage").on("click", function(e) {
-	e.preventDefault();
-	var page = $(this).attr("href");
-	$("#moveToOtherPageForm").append("<input type='hidden' name='page' value=" + page + ">");
-	$("#moveToOtherPageForm").submit(); 
-});
-
-$("#searchForm").submit(function (e) {
-	debugger
-});
-
-/*
  * boardList.jsp 에서 게시글 링크를 클릭했을 때 POST 요청이 이루어지도록 이벤트 처리
  */
 $(".moveToBoardDetail").on("click", function(e) {
@@ -75,8 +61,8 @@ $("#form").submit(function(e){
 		    fail: function(data){
 		    	// DB에서 업데이트 실패 시 실패 메시지를 띄운다. 
 		        alert('request failed');
-		     }
-		  });
+		    }
+	  });
 
 });
 
