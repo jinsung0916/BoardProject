@@ -3,6 +3,7 @@ package com.joins.myapp.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -38,27 +39,29 @@ public class FileUploadHandler {
 	    log.info("upload file...");
 	    log.info("Upload File Name: " + multipartFile.getOriginalFilename());
 	    log.info("Upload File Size: " + multipartFile.getSize());
-
-	    String fileName = getFileName(multipartFile);
-	    UUID uuid = UUID.randomUUID();
+	    
+	    // 파일이름에서 확장자를 분리한다.
+	    StringTokenizer strtok = new StringTokenizer(getFileName(multipartFile), ".");
+	    String fileName = strtok.nextToken();
+	    String extension = strtok.nextToken(); 
 	    
 	    // 파일시스템에 저장될 실제 파일 이름을 생성한다.
-	    // TODO 확장자 처리
+	    // TODO 리펙토링
 	    String actualFileName = fileName;
-	    File saveFile = new File(uploadFolder, actualFileName);
+	    File saveFile = new File(uploadFolder, actualFileName + "." + extension);
 	    int cnt = 1;
 	    while(saveFile.exists()){
 		// 이름이 중복되는 파일이 존재할 경우 이름을 변경한다.
 		actualFileName = fileName + "_" + (cnt++);
-		saveFile = new File(uploadFolder, actualFileName);
+		saveFile = new File(uploadFolder, actualFileName + "." + extension);
 	    } 
 	    
 	    try {
 		// 파일을 저장하고 파일 정보 객체를 생성한다.
 		multipartFile.transferTo(saveFile);
 		FileDTO file = new FileDTO();
-		file.setUuid(uuid.toString());
-		file.setFileName(actualFileName);
+		file.setUuid(UUID.randomUUID().toString());
+		file.setFileName(actualFileName + "." + extension);
 		file.setFilePath(uploadFolder.getAbsolutePath());
 		files.add(file);
 	    } catch (Exception e) {
