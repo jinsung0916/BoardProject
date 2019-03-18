@@ -16,7 +16,6 @@
 		<fieldset>
 			<div class="hiddenFormGroup">
 				<input id="no" type="hidden" name="no" value="${board.no}" />
-				<input id="page" type="hidden" name="page" value="${page}" />
 			</div>
 			
 			<div class="formGroup">
@@ -36,7 +35,7 @@
 			
 			<div>
 				<c:forEach var="file" items="${board.fileList}">
-					<a href="/myapp/board/download?uuid=${file.uuid}">${file.fileName}</a></br>
+					<a href="/myapp/board/download?uuid=${file.uuid}">${file.fileName}</a>
 				</c:forEach>
 			</div>
 			
@@ -48,6 +47,14 @@
 		</fieldset>
 	</form>
        
+    <form id="moveToBoardListForm" method="POST" action='/myapp/board/list' style="display:none" >
+		<input type='hidden' name='page' value="${searchInfo.page}">
+		<input type='hidden' name='choose' value="${searchInfo.choose}">
+		<input type='hidden' name='search' value="${searchInfo.search}">
+		<input type='hidden' name='startDate' value="${searchInfo.startDate}">
+		<input type='hidden' name='endDate' value="${searchInfo.endDate}">
+	</form>
+	
     <script src="/myapp/resources/js/script.js"></script>
 </body>
 </html>

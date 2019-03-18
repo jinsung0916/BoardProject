@@ -15,10 +15,10 @@
 	<div align="center" style="width:70%">
 		<div>
 			<div align="left">
-				<form method="POST" action="">
-					<input type="date" name="startDate"/>~
-					<input type="date" name="endDate"/>
-					<input type="search" name="search">
+				<form id="searchForm" method="POST" action="/myapp/board/list">
+					<input type="date" name="startDate" value="${pageObj.searchInfo.startDate}"/>~
+					<input type="date" name="endDate" value="${pageObj.searchInfo.endDate}"/>
+					<input type="search" name="search" value="${pageObj.searchInfo.search}">
 					<input type="radio" name="choose" value="title">제목
 	 	 			<input type="radio" name="choose" value="contents">내용
 					<input type="submit" value="검색">
@@ -47,6 +47,14 @@
 	
 		<jsp:include page="../pagination.jsp"></jsp:include>
 	</div>
+	
+	<form id="moveToBoardDetailForm" method="POST" action='/myapp/board/detail' style="display:none" >
+		<input type='hidden' name='page' value="${pageObj.searchInfo.page}">
+		<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
+		<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
+		<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
+		<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
+	</form>
 	
 	<script src="/myapp/resources/js/script.js"></script>
 </body>

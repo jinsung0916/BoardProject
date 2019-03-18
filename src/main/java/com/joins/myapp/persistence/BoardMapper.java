@@ -6,15 +6,11 @@ import com.joins.myapp.domain.BoardDTO;
 import com.joins.myapp.domain.SearchInfoDTO;
 
 public interface BoardMapper {
-    int countAll();
+    int countAll(SearchInfoDTO searchInfo);
 
     BoardDTO findByNo(long id);
 
     List<BoardDTO> findPagenated(SearchInfoDTO searchInfo);
-    
-    List<BoardDTO> findPagenatedByDateAndTitle(SearchInfoDTO searchInfo);
-    
-    List<BoardDTO> findPagenatedByDateAndContents(SearchInfoDTO searchInfo);
     
     int insert(BoardDTO board);
 

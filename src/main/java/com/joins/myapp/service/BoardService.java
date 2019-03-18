@@ -9,7 +9,7 @@ public interface BoardService {
 
     BoardDTO findOne(long id);
 
-    PageDTO<BoardDTO> findPaginated(int page, int itemsPerPage, int PagesPerOneLine, SearchInfoDTO searchInfo);
+    PageDTO<BoardDTO> findPaginated(int pagesPerOneLine, SearchInfoDTO searchInfo);
 
     boolean create(BoardDTO board);
 

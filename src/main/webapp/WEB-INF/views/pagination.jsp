@@ -6,15 +6,15 @@
 	<a class="moveToOtherPage" href="${pageObj.startPage-1}">&lt&lt</a>
 </c:if>
 <c:forEach var="num" begin="${pageObj.startPage}" end="${pageObj.endPage}">
-	<c:choose>
-		<c:when test="${num == pageObj.currentPage}">
-			<a id="currentPage">${num}</a>
-		</c:when>
-		<c:otherwise>
-			<a class="moveToOtherPage" href="${num}">${num}</a>
-		</c:otherwise>
-	</c:choose>
+	<a class="moveToOtherPage" href="${num}">${num}</a>
 </c:forEach>	
 <c:if test="${pageObj.next}">
 	<a class="moveToOtherPage" href="${pageObj.endPage+1}">&gt&gt</a>
 </c:if>
+
+<form id="moveToOtherPageForm" method="POST" action='/myapp/board/list' style="display:none" >
+		<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
+		<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
+		<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
+		<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
+</form>

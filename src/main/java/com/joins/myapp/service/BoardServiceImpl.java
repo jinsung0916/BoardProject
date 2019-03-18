@@ -43,27 +43,18 @@ public class BoardServiceImpl implements BoardService {
      * 4. 출력 Data: 게시글 리스트
      */
     @Override
-    public PageDTO<BoardDTO> findPaginated(int page, int itemsPerPage, int PagesPerOneLine, SearchInfoDTO searchInfo) {
+    public PageDTO<BoardDTO> findPaginated(int pagesPerOneLine, SearchInfoDTO searchInfo) {
+	int page = searchInfo.getPage();
+	int itemsPerPage = searchInfo.getItemsPerPage();
+	
 	// mariaDB LIMIT절 조건 설정
 	int startIdx = (page - 1) * itemsPerPage;
 	searchInfo.setStartIdx(startIdx);
 	
-	List<BoardDTO> boards = null;
-	String choose = searchInfo.getChoose();
-	if("title".equals(choose)) {
-	    // 검색조건이 '제목'일 때
-	    boards = boardMapper.findPagenatedByDateAndTitle(searchInfo);
-	} else if("contents".equals(choose)) {
-	    // 검색조건이 '내용'일 때
-	    boards = boardMapper.findPagenatedByDateAndContents(searchInfo);
-	} else {
-	    // 검색조건이 존재하지 않을 때
-	    boards = boardMapper.findPagenated(searchInfo);
-	}
-
-	int totalSizeOfTable = boardMapper.countAll();
-	PageDTO<BoardDTO> pageObj = PaginationHandler.generatePageDTO(page, itemsPerPage, 
-		PagesPerOneLine, totalSizeOfTable);
+	List<BoardDTO> boards = boardMapper.findPagenated(searchInfo);
+	
+	int totalSizeOfTable = boardMapper.countAll(searchInfo);
+	PageDTO<BoardDTO> pageObj = PaginationHandler.generatePageDTO(searchInfo, pagesPerOneLine, totalSizeOfTable);
 	pageObj.setContents(boards);	
 	return pageObj;
     }
