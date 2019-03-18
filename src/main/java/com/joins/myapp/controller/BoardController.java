@@ -161,7 +161,7 @@ public class BoardController {
     private void fileUploadProcess(BoardDTO board, MultipartFile[] uploadFile) {
 	if (!FileUploadHandler.isEmpty(uploadFile)) {
 	    // 업로드 파일이 존재할 때
-	    List<FileDTO> list = FileUploadHandler.uploadFile(uploadFile, baseUploadFolder);
+	    List<FileDTO> list = FileUploadHandler.uploadFile(uploadFile, baseUploadFolder, board.getNo());
 	    for(FileDTO file : list) {
 		// FileDTO에 Foreign Key 할당 후 DB에 저장한다.
 		file.setBoardNo(board.getNo());

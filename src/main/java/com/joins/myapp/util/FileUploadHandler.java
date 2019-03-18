@@ -1,9 +1,7 @@
 package com.joins.myapp.util;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,25 +30,35 @@ public class FileUploadHandler {
      * 3. 입력 Data: 파일 리스트, 파일을 저장할 루트 경로
      * 4. 출력 Data: 파일 정보 리스트
      */
-    public static List<FileDTO> uploadFile(MultipartFile[] uploadFile, String baseUploadFolder) {
+    public static List<FileDTO> uploadFile(MultipartFile[] uploadFile, String baseUploadFolder, long no) {
 	List<FileDTO> files = new ArrayList<FileDTO>();
-	File uploadFolder = getPath(baseUploadFolder);
+	File uploadFolder = getPath(baseUploadFolder, no);
 	for (MultipartFile multipartFile : uploadFile) {
+	    // 업로드할 개별 파일의 경로와 이름을 지정하고 파일시스템에 저장한다.
 	    log.info("upload file...");
 	    log.info("Upload File Name: " + multipartFile.getOriginalFilename());
 	    log.info("Upload File Size: " + multipartFile.getSize());
 
 	    String fileName = getFileName(multipartFile);
 	    UUID uuid = UUID.randomUUID();
-	    String fileNameWithUUID = uuid + "_" + fileName;
-
-	    File saveFile = new File(uploadFolder, fileNameWithUUID);
-
+	    
+	    // 파일시스템에 저장될 실제 파일 이름을 생성한다.
+	    // TODO 확장자 처리
+	    String actualFileName = fileName;
+	    File saveFile = new File(uploadFolder, actualFileName);
+	    int cnt = 1;
+	    while(saveFile.exists()){
+		// 이름이 중복되는 파일이 존재할 경우 이름을 변경한다.
+		actualFileName = fileName + "_" + (cnt++);
+		saveFile = new File(uploadFolder, actualFileName);
+	    } 
+	    
 	    try {
+		// 파일을 저장하고 파일 정보 객체를 생성한다.
 		multipartFile.transferTo(saveFile);
 		FileDTO file = new FileDTO();
 		file.setUuid(uuid.toString());
-		file.setFileName(fileName);
+		file.setFileName(actualFileName);
 		file.setFilePath(uploadFolder.getAbsolutePath());
 		files.add(file);
 	    } catch (Exception e) {
@@ -63,17 +71,17 @@ public class FileUploadHandler {
     /**
      * 1. 개요:
      * 2. 처리내용: 저장할 세부 경로를 생성하고, 존재하지 않는 디렉토리일 경우 새로 생성한다.  
-     * 3. 입력 Data: 파일을 저장할 루트 경로
+     * 3. 입력 Data: 파일을 저장할 루트 경로, 게시글 번호
      * 4. 출력 Data: 파일 저장 경로 
      */
-    private static File getPath(String baseUploadFolder) {
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	Date date = new Date();
-	String path = sdf.format(date).replace("-", File.separator);
-
-	File uploadFolder = new File(baseUploadFolder, path);
-
+    private static File getPath(String baseUploadFolder, long no) {
+//	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//	Date date = new Date();
+//	String path = sdf.format(date).replace("-", File.separator);
+	File uploadFolder = new File(baseUploadFolder, String.valueOf(no));
+	
 	if (!uploadFolder.exists()) {
+	    // 경로가 존재하지 않을 경우 새로운 디렉토리를 생성한다.
 	    uploadFolder.mkdirs();
 	}
 
