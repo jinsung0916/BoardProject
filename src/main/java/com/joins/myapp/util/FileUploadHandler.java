@@ -36,32 +36,20 @@ public class FileUploadHandler {
 	File uploadFolder = getPath(baseUploadFolder, no);
 	for (MultipartFile multipartFile : uploadFile) {
 	    // 업로드할 개별 파일의 경로와 이름을 지정하고 파일시스템에 저장한다.
+	    
 	    log.info("upload file...");
 	    log.info("Upload File Name: " + multipartFile.getOriginalFilename());
 	    log.info("Upload File Size: " + multipartFile.getSize());
 	    
-	    // 파일이름에서 확장자를 분리한다.
-	    StringTokenizer strtok = new StringTokenizer(getFileName(multipartFile), ".");
-	    String fileName = strtok.nextToken();
-	    String extension = strtok.nextToken(); 
-	    
-	    // 파일시스템에 저장될 실제 파일 이름을 생성한다.
-	    // TODO 리펙토링
-	    String actualFileName = fileName;
-	    File saveFile = new File(uploadFolder, actualFileName + "." + extension);
-	    int cnt = 1;
-	    while(saveFile.exists()){
-		// 이름이 중복되는 파일이 존재할 경우 이름을 변경한다.
-		actualFileName = fileName + "_" + (cnt++);
-		saveFile = new File(uploadFolder, actualFileName + "." + extension);
-	    } 
-	    
+	    String originalFileName = getOriginalFileName(multipartFile);
+	    File saveFile = getSaveFilePath(uploadFolder, originalFileName);
+	
 	    try {
 		// 파일을 저장하고 파일 정보 객체를 생성한다.
 		multipartFile.transferTo(saveFile);
 		FileDTO file = new FileDTO();
 		file.setUuid(UUID.randomUUID().toString());
-		file.setFileName(actualFileName + "." + extension);
+		file.setFileName(saveFile.getName());
 		file.setFilePath(uploadFolder.getAbsolutePath());
 		files.add(file);
 	    } catch (Exception e) {
@@ -78,9 +66,6 @@ public class FileUploadHandler {
      * 4. 출력 Data: 파일 저장 경로 
      */
     private static File getPath(String baseUploadFolder, long no) {
-//	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//	Date date = new Date();
-//	String path = sdf.format(date).replace("-", File.separator);
 	File uploadFolder = new File(baseUploadFolder, String.valueOf(no));
 	
 	if (!uploadFolder.exists()) {
@@ -90,17 +75,42 @@ public class FileUploadHandler {
 
 	return uploadFolder;
     }
-
+    
     /**
      * 1. 개요:
      * 2. 처리내용: 파일 이름을 반환한다(브라우저 별 예외처리).
      * 3. 입력 Data: multipartFile
      * 4. 출력 Data: 파일이름
      */
-    private static String getFileName(MultipartFile multipartFile) {
+    private static String getOriginalFileName(MultipartFile multipartFile) {
 	String fileName = multipartFile.getOriginalFilename();
 	// for IE
 	fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
 	return fileName;
     }
+    
+    /**
+     * 1. 개요:
+     * 2. 처리내용: 파일시스템에 저장될 실제 파일 이름으로 File 객체를 생성한다.
+     * 3. 입력 Data: 업로드할 폴더의 File 객체, 기존 파일 이름
+     * 4. 출력 Data: File 객체
+     */
+    private static File getSaveFilePath(File uploadFolder, String originalFileName) {
+	// 파일이름에서 확장자를 분리한다.
+	StringTokenizer strtok = new StringTokenizer(originalFileName, ".");
+	String NameOnly = strtok.nextToken();
+	String extension = strtok.nextToken(); 
+	    
+	// 파일시스템에 저장될 실제 파일 이름을 생성한다.
+	String actualFileName = NameOnly + "." + extension;
+	File saveFile = new File(uploadFolder, actualFileName);
+	int cnt = 1;
+	while(saveFile.exists()){
+	    // 이름이 중복되는 파일이 존재할 경우 이름을 변경한다.
+	    actualFileName = NameOnly + "_" + (cnt++) + "." + extension;
+	    saveFile = new File(uploadFolder, actualFileName);
+	}
+	return saveFile;
+    }
+
 }
