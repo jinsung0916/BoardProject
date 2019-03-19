@@ -8,6 +8,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h4>요청한 URL을 찾을 수 없습니다.</h4>
+	<h4>요청한 페이지를 찾을 수 없습니다.</h4>
 </body>
 </html>
