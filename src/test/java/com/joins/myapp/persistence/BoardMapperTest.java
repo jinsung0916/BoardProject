@@ -21,23 +21,23 @@ public class BoardMapperTest {
     @Autowired
     private BoardMapper boardMapper;
 
-//    @Test
-//    public void testInsert() {
-//	BoardDTO board = new BoardDTO();
-//	
-//	for(int i=1; i<=200; i++) {
-//	    board.setTitle(i + "번째 테스트");
-//	    board.setContents(i + "번째 테스트");
-//	    board.setRegDate(new Date());
-//	    boardMapper.insert(board);
-//	    log.info(board.toString());
-//	}
-//    }
+    @Test
+    public void testInsert() {
+	BoardDTO board = new BoardDTO();
+	
+	for(int i=1; i<=200; i++) {
+	    board.setTitle(i + "번째 테스트");
+	    board.setContents(i + "번째 테스트");
+	    board.setRegDate(new Date());
+	    boardMapper.insert(board);
+	    log.info(board.toString());
+	}
+    }
 
     @Test
     public void testFindByNo() {
 	// 존재하는 게시물 번호로 확인해야 함.
-	BoardDTO board = boardMapper.findByNo(122L);
+	BoardDTO board = boardMapper.findByNo(140L);
 
 	log.info(board.toString());
     }
@@ -47,6 +47,9 @@ public class BoardMapperTest {
 	SearchInfoDTO searchInfo = new SearchInfoDTO();
 	searchInfo.setItemsPerPage(10);
 	searchInfo.setStartIdx(0);
+	searchInfo.setStartDate("2019-03-18");
+	searchInfo.setEndDate("2019-03-19");
+
 	List<BoardDTO> list = boardMapper.findPagenated(searchInfo);
 
 	for (BoardDTO board : list)

@@ -5,17 +5,17 @@
 		SELECT count(*) 
        	FROM board
        	<where>
-			<if test="startDate != null and endDate !=null and !(startDate == '' and endDate == '')">
+			<if test="startDate != null and endDate !=null">
 			 	<if test="startDate != ''">
 			 		<![CDATA[ regDate >= #{startDate} ]]>
 				</if>
 			 	<trim prefix="AND">
 					<if test="endDate != ''">
-						<![CDATA[ regDate <= #{endDate} ]]>
+						<![CDATA[ regDate <= CONCAT(#{endDate}, ' 23:59:59') ]]>
 			   		</if>
 				</trim>
 			</if>
-			<if test="search != ''">
+			<if test="search != null">
 				<trim prefix="AND">
 					<choose>	    	
 						<when test="choose == 'title'">
@@ -29,19 +29,19 @@
 			</if>
        </where>
     </select>
-				
-	<resultMap id="boardResult" type="board">
+
+    <resultMap id="boardResult" type="board">
 		<id property="no" column="blog_no" />
 		<result property="title" column="board_title"/>
 		<result property="contents" column="board_contents"/>
 		<result property="regDate" column="board_regDate"/>
-		<collection property="fileList" ofType="file">
+		<collection property="fileList" javaType="ArrayList" ofType="file">
 			<id property="uuid" column="file_uuid"/>
 			<result property="fileName" column="file_fileName"/>
 			<result property="filePath" column="file_filePath"/>
 		</collection>
 	</resultMap>
-	
+				
     <select id="findByNo" parameterType="long" resultMap="boardResult">
         select b.no 		as board_no,
         	   b.title 		as board_title,
@@ -54,22 +54,22 @@
         where b.no = #{no}
           AND f.boardNo = b.no
     </select>
-	
+    	
 	<select id="findPagenated" parameterType="searchInfo" resultType="board">
 		SELECT no, title, regDate 
     	FROM board
 		<where>
-			<if test="startDate != null and endDate !=null and !(startDate == '' and endDate == '')">
+			<if test="startDate != null and endDate !=null">
 			 	<if test="startDate != ''">
 			 		<![CDATA[ regDate >= #{startDate} ]]>
 				</if>
 			 	<trim prefix="AND">
 					<if test="endDate != ''">
-						<![CDATA[ regDate <= #{endDate} ]]>
+						<![CDATA[ regDate <= CONCAT(#{endDate}, ' 23:59:59') ]]>
 			   		</if>
 				</trim>
 			</if>
-			<if test="search != ''">
+			<if test="search != null">
 				<trim prefix="AND">
 					<choose>	    	
 						<when test="choose == 'title'">
