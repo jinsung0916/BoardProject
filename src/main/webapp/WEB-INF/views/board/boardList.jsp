@@ -21,12 +21,16 @@
 					<input type="date" name="endDate" value="${pageObj.searchInfo.endDate}"/>
 					<input type="search" name="search" value="${pageObj.searchInfo.search}">
 					<c:choose>
+						<c:when test="${pageObj.searchInfo.choose == 'title'}">
+							<input type="radio" name="choose" value="title" checked>제목
+	 	 					<input type="radio" name="choose" value="contents">내용
+						</c:when>
 						<c:when test="${pageObj.searchInfo.choose == 'contents'}">
 							<input type="radio" name="choose" value="title">제목
 	 	 					<input type="radio" name="choose" value="contents" checked>내용
 						</c:when>
 						<c:otherwise>
-							<input type="radio" name="choose" value="title" checked>제목
+							<input type="radio" name="choose" value="title">제목
 	 	 					<input type="radio" name="choose" value="contents">내용
 						</c:otherwise>
 					</c:choose>
