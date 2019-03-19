@@ -24,6 +24,7 @@ import com.joins.myapp.domain.FileDTO;
 import com.joins.myapp.domain.PageDTO;
 import com.joins.myapp.domain.SearchInfoDTO;
 import com.joins.myapp.service.BoardService;
+import com.joins.myapp.util.FileDeleteHandler;
 import com.joins.myapp.util.FileDownloadHandler;
 import com.joins.myapp.util.FileUploadHandler;
 
@@ -172,6 +173,14 @@ public class BoardController {
 	return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
     }
     
+    @PostMapping("/deleteFile")
+    @ResponseBody
+    private ResponseEntity<String> fileDelete(String uuid){
+	FileDTO file = service.getFileByUUID(uuid);
+	
+	FileDeleteHandler.deleteFile(file.toString());
+    }
+    
     /**
      * 1. 개요: 코드 중복 제거를 위한 private 매소드
      * 2. 처리내용: 파일DTO에 게시글 정보를 담아 DB에 저장한다.
@@ -191,5 +200,5 @@ public class BoardController {
 	    }
 	}
     }
-    
+       
 }
