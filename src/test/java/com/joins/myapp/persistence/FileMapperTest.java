@@ -1,7 +1,5 @@
 package com.joins.myapp.persistence;
 
-import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +31,6 @@ public class FileMapperTest {
     @Test
     public void testDelete() {
 	log.info(mapper.delete("1") + "");
-    }
-
-    @Test
-    public void testFindByBoardNo() {
-	List<FileDTO> list = mapper.findByBoardNo(1L);
-	list.forEach((x) -> {
-	    log.info(x.toString());
-	});
     }
 
     @Test
