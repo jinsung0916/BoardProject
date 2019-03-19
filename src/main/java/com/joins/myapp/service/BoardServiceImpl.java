@@ -32,7 +32,6 @@ public class BoardServiceImpl implements BoardService {
      */
     @Override
     public BoardDTO findOne(long id) {
-	// TODO 조인으로 세부정보를 조회하도록 수정
 	BoardDTO board = boardMapper.findByNo(id);
 	return board;
     }
