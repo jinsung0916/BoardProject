@@ -1,68 +1,89 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.joins.myapp.persistence.BoardMapper">
 	
-    <select id="countAll" parameterType="searchInfo" resultType="int">
-       SELECT count(*) 
-       FROM board
-       <where>
-           <if test="startDate != null and endDate !=null">
-           		<choose>
-           			<when test="startDate != '' and endDate != ''">
-           				regDate BETWEEN #{startDate} and #{endDate}
-           			</when>
-           			<when test="startDate == '' and endDate != ''">
-           				 <![CDATA[ regDate <= #{endDate} ]]>
-           			</when>
-           			<when test="startDate != '' and endDate == ''">
-           				<![CDATA[ regDate >= #{startDate} ]]>
-           			</when>
-           		</choose>
-           </if>
-       	   <trim prefix="AND">
-		       <choose>
-			       <when test="choose == 'title'">
-			       	title LIKE CONCAT('%', #{search}, '%')
-			       </when>
-			       <when test="choose == 'contents'">
-			       	contents LIKE CONCAT('%', #{search}, '%')
-			       </when> 
-		       </choose>
-       	   </trim>
+	<select id="countAll" parameterType="searchInfo" resultType="int">
+		SELECT count(*) 
+       	FROM board
+       	<where>
+			<if test="startDate != null and endDate !=null and !(startDate == '' and endDate == '')">
+			 	<if test="startDate != ''">
+			 		<![CDATA[ regDate >= #{startDate} ]]>
+				</if>
+			 	<trim prefix="AND">
+					<if test="endDate != ''">
+						<![CDATA[ regDate <= #{endDate} ]]>
+			   		</if>
+				</trim>
+			</if>
+			<if test="search != ''">
+				<trim prefix="AND">
+					<choose>	    	
+						<when test="choose == 'title'">
+			      			title LIKE CONCAT('%', #{search}, '%')
+			      		</when>
+			      		<when test="choose == 'contents'">
+			      			contents LIKE CONCAT('%', #{search}, '%')
+			      		</when> 
+					</choose>
+				</trim>
+			</if>
        </where>
     </select>
-
-    <select id="findByNo" parameterType="long" resultType="board">
-        select * from board 
-        where no = #{no};
+				
+	<resultMap id="boardResult" type="board">
+		<id property="no" column="blog_no" />
+		<result property="title" column="board_title"/>
+		<result property="contents" column="board_contents"/>
+		<result property="regDate" column="board_regDate"/>
+		<collection property="fileList" ofType="file">
+			<id property="uuid" column="file_uuid"/>
+			<result property="fileName" column="file_fileName"/>
+			<result property="filePath" column="file_filePath"/>
+		</collection>
+	</resultMap>
+	
+    <select id="findByNo" parameterType="long" resultMap="boardResult">
+        select b.no 		as board_no,
+        	   b.title 		as board_title,
+        	   b.contents 	as board_contents,
+        	   b.regDate 	as board_regDate,
+        	   f.uuid 		as file_uuid,
+        	   f.fileName 	as file_fileName,
+        	   f.filePath 	as file_filePath
+        from board b, file f 
+        where b.no = #{no}
+          AND f.boardNo = b.no
     </select>
 	
 	<select id="findPagenated" parameterType="searchInfo" resultType="board">
-       SELECT no, title, regDate 
-       FROM board
-       <where>
-   		<if test="startDate != null and endDate !=null">
-      		<if test="startDate != ''">
-      			<![CDATA[ regDate >= #{startDate} ]]>
-      		</if>
-     	   	<trim prefix="AND">
-      			<if test="endDate != ''">
-      				 <![CDATA[ regDate <= #{endDate} ]]>
-      			</if>
-			</trim>
-      	</if>
-       	<trim prefix="AND">
-	       <choose>
-		       <when test="choose == 'title'">
-		       	title LIKE CONCAT('%', #{search}, '%')
-		       </when>
-		       <when test="choose == 'contents'">
-		       	contents LIKE CONCAT('%', #{search}, '%')
-		       </when> 
-	       </choose>
-       	</trim>
-       </where>
-       ORDER BY no DESC 
-       LIMIT #{startIdx}, #{itemsPerPage}
+		SELECT no, title, regDate 
+    	FROM board
+		<where>
+			<if test="startDate != null and endDate !=null and !(startDate == '' and endDate == '')">
+			 	<if test="startDate != ''">
+			 		<![CDATA[ regDate >= #{startDate} ]]>
+				</if>
+			 	<trim prefix="AND">
+					<if test="endDate != ''">
+						<![CDATA[ regDate <= #{endDate} ]]>
+			   		</if>
+				</trim>
+			</if>
+			<if test="search != ''">
+				<trim prefix="AND">
+					<choose>	    	
+						<when test="choose == 'title'">
+			      			title LIKE CONCAT('%', #{search}, '%')
+			      		</when>
+			      		<when test="choose == 'contents'">
+			      			contents LIKE CONCAT('%', #{search}, '%')
+			      		</when> 
+					</choose>
+				</trim>
+			</if>
+		</where>
+		ORDER BY no DESC 
+		LIMIT #{startIdx}, #{itemsPerPage}
     </select>
 	
 	<insert id="insert" parameterType="board" useGeneratedKeys="true" keyProperty="no" keyColumn="NO">

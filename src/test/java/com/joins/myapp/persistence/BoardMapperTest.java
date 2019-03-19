@@ -37,7 +37,7 @@ public class BoardMapperTest {
     @Test
     public void testFindByNo() {
 	// 존재하는 게시물 번호로 확인해야 함.
-	BoardDTO board = boardMapper.findByNo(110L);
+	BoardDTO board = boardMapper.findByNo(122L);
 
 	log.info(board.toString());
     }
@@ -45,6 +45,7 @@ public class BoardMapperTest {
     @Test
     public void testFindPaginated() {
 	SearchInfoDTO searchInfo = new SearchInfoDTO();
+	searchInfo.setItemsPerPage(10);
 	searchInfo.setStartIdx(0);
 	List<BoardDTO> list = boardMapper.findPagenated(searchInfo);
 
