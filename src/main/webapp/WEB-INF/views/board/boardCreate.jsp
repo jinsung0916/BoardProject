@@ -30,5 +30,7 @@
 		    <input type="submit" value="submit">
 		</fieldset>
 	</form>
+	
+	<script src="/myapp/resources/js/script.js"></script>
 </body>
 </html>

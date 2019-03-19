@@ -1,9 +1,8 @@
 package com.joins.myapp.controller;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,24 +84,41 @@ public class BoardController {
 	model.addAttribute("searchInfo", searchInfo);
 	return "board/boardDetail";
     }
-
+    
     /**
-     * 1. 개요: GET|POST /board/create 
-     * 2. 처리내용: get 요청 시 게시글 생성 페이지를 반환하고, post 요청 시 게시글을 생성한 후 목록 페이지로 리다이렉트한다. 
-     * 3. 입력 Data: 게시글 데이터와 업로드한 파일(post 요청 시) 
+     * 1. 개요: GET /board/create 
+     * 2. 처리내용: 게시글 생성 페이지를 반환한다.
+     * 3. 입력 Data:
      * 4. 출력 Data: 
      */
-    @RequestMapping("/create")
-    public String boardCreate(HttpServletRequest req, BoardDTO board, MultipartFile[] uploadFile) {
-	if ("POST".equals(req.getMethod())) {
-	    // POST 요청 처리
-	    service.create(board);
-	    fileUploadProcess(board, uploadFile);
-	    return "redirect:/board/list";
-	} else {
-	    // GET 요청 처리
-	    return "board/boardCreate";
+    @GetMapping("/create")
+    public String boardCreate() {
+	return "board/boardCreate";
+    }
+    
+    /**
+     * 1. 개요: POST /board/create 
+     * 2. 처리내용: 게시글을 생성한다. 
+     * 3. 입력 Data: 게시글 데이터와 업로드한 파일 
+     * 4. 출력 Data: 응답 헤더와 상태메시지
+     */
+    @PostMapping("/create")
+    @ResponseBody
+    public ResponseEntity<String> boardCreate(BoardDTO board, MultipartFile[] uploadFile) {
+	if(!service.create(board)) {
+	    log.error("게시글 생성 실패");
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 생성 실패");
 	}
+	    
+	ResponseEntity<String> result = null;
+	try {
+	    fileUploadProcess(board, uploadFile);
+	    result = ResponseEntity.status(HttpStatus.ACCEPTED).build();
+	} catch (Exception e) {
+	    log.error(e.getMessage());
+	    result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 실패");
+	}
+	return result;
     }
     
     /**
@@ -114,14 +130,18 @@ public class BoardController {
     @PostMapping("/update")
     @ResponseBody
     public ResponseEntity<String> boardUpdate(BoardDTO board, MultipartFile[] uploadFile) {
+	if(!service.update(board)) {
+	    log.error("게시글 업데이트 실패");
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 업데이트 실패");
+	}	
+	    
 	ResponseEntity<String> result = null;
-	if (service.update(board)) {
-	    // 업데이트가 성공할 때
+	try {
 	    fileUploadProcess(board, uploadFile);
 	    result = ResponseEntity.status(HttpStatus.ACCEPTED).build();
-	} else {
-	    // 업데이트가 실패할 때
-	    result = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+	} catch (Exception e) {
+	    log.error(e.getMessage());
+	    result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 실패");
 	}
 	return result;
     }
@@ -157,8 +177,10 @@ public class BoardController {
      * 2. 처리내용: 파일DTO에 게시글 정보를 담아 DB에 저장한다.
      * 3. 입력 Data: 게시글DTO, 업로드할 파일
      * 4. 출력 Data: 
+     * @throws IOException 
+     * @throws IllegalStateException 
      */
-    private void fileUploadProcess(BoardDTO board, MultipartFile[] uploadFile) {
+    private void fileUploadProcess(BoardDTO board, MultipartFile[] uploadFile) throws IllegalStateException, IOException {
 	if (!FileUploadHandler.isEmpty(uploadFile)) {
 	    // 업로드 파일이 존재할 때
 	    List<FileDTO> list = FileUploadHandler.uploadFile(uploadFile, baseUploadFolder, board.getNo());

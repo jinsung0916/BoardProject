@@ -1,6 +1,7 @@
 package com.joins.myapp.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -22,7 +23,14 @@ public class FileUploadHandler {
      * 4. 출력 Data: 파일이 존재하면 true, 존재하지 않으면 false를 반환한다.
      */
     public static boolean isEmpty(MultipartFile[] uploadFile) {
-	return uploadFile[0].getSize() == 0;
+	if(uploadFile.length > 0) {
+	    // 업로드한 파일이 존재하나 실질적으로 존재하지 않을 때
+	    return uploadFile[0].getSize() == 0;
+	}
+	else {
+	    // 업로드한 파일이 존재하지 않을 때
+	    return false;
+	}
     }
 
     /**
@@ -30,8 +38,10 @@ public class FileUploadHandler {
      * 2. 처리내용: 업로드한 파일을 파일시스템에 저장한다.
      * 3. 입력 Data: 파일 리스트, 파일을 저장할 루트 경로
      * 4. 출력 Data: 파일 정보 리스트
+     * @throws IOException 
+     * @throws IllegalStateException 
      */
-    public static List<FileDTO> uploadFile(MultipartFile[] uploadFile, String baseUploadFolder, long no) {
+    public static List<FileDTO> uploadFile(MultipartFile[] uploadFile, String baseUploadFolder, long no) throws IllegalStateException, IOException {
 	List<FileDTO> files = new ArrayList<FileDTO>();
 	File uploadFolder = getPath(baseUploadFolder, no);
 	for (MultipartFile multipartFile : uploadFile) {
@@ -44,17 +54,12 @@ public class FileUploadHandler {
 	    String originalFileName = getOriginalFileName(multipartFile);
 	    File saveFile = getSaveFilePath(uploadFolder, originalFileName);
 	
-	    try {
-		// 파일을 저장하고 파일 정보 객체를 생성한다.
-		multipartFile.transferTo(saveFile);
-		FileDTO file = new FileDTO();
-		file.setUuid(UUID.randomUUID().toString());
-		file.setFileName(saveFile.getName());
-		file.setFilePath(uploadFolder.getAbsolutePath());
-		files.add(file);
-	    } catch (Exception e) {
-		log.error(e.getMessage());
-	    }
+	    multipartFile.transferTo(saveFile);
+	    FileDTO file = new FileDTO();
+	    file.setUuid(UUID.randomUUID().toString());
+	    file.setFileName(saveFile.getName());
+	    file.setFilePath(uploadFolder.getAbsolutePath());
+	    files.add(file);
 	}
 	return files;
     }

@@ -18,7 +18,7 @@ $(".moveToBoardDetail").on("click", function(e) {
 $("#boardCreateForm").submit(function(e){
 	  e.preventDefault();
 	  var url = '/myapp/board/create';
-	  var formData = new FormData($("#form")[0]);
+	  var formData = new FormData($("#boardCreateForm")[0]);
 	  $.ajax({
 		    url: url,
 		    type: 'POST',
@@ -76,7 +76,7 @@ $("#modifyBtn").on("click", function(e){
 $("#boardDetailform").submit(function(e){
 	  e.preventDefault();
 	  var url = '/myapp/board/update';
-	  var formData = new FormData($("#form")[0]);
+	  var formData = new FormData($("#boardDetailform")[0]);
 	  $.ajax({
 		    url: url,
 		    type: 'POST',
