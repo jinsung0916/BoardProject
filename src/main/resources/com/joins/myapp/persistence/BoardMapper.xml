@@ -40,29 +40,26 @@
        SELECT no, title, regDate 
        FROM board
        <where>
-           <if test="startDate != null and endDate !=null">
-           		<choose>
-           			<when test="startDate != '' and endDate != ''">
-           				regDate BETWEEN #{startDate} and #{endDate}
-           			</when>
-           			<when test="startDate == '' and endDate != ''">
-           				 <![CDATA[ regDate <= #{endDate} ]]>
-           			</when>
-           			<when test="startDate != '' and endDate == ''">
-           				<![CDATA[ regDate >= #{startDate} ]]>
-           			</when>
-           		</choose>
-           </if>
-       	   <trim prefix="AND">
-		       <choose>
-			       <when test="choose == 'title'">
-			       	title LIKE CONCAT('%', #{search}, '%')
-			       </when>
-			       <when test="choose == 'contents'">
-			       	contents LIKE CONCAT('%', #{search}, '%')
-			       </when> 
-		       </choose>
-       	   </trim>
+   		<if test="startDate != null and endDate !=null">
+      		<if test="startDate != ''">
+      			<![CDATA[ regDate >= #{startDate} ]]>
+      		</if>
+     	   	<trim prefix="AND">
+      			<if test="endDate != ''">
+      				 <![CDATA[ regDate <= #{endDate} ]]>
+      			</if>
+			</trim>
+      	</if>
+       	<trim prefix="AND">
+	       <choose>
+		       <when test="choose == 'title'">
+		       	title LIKE CONCAT('%', #{search}, '%')
+		       </when>
+		       <when test="choose == 'contents'">
+		       	contents LIKE CONCAT('%', #{search}, '%')
+		       </when> 
+	       </choose>
+       	</trim>
        </where>
        ORDER BY no DESC 
        LIMIT #{startIdx}, #{itemsPerPage}
