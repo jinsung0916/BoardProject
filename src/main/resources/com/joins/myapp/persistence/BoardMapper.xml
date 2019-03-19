@@ -31,7 +31,7 @@
     </select>
 
     <resultMap id="boardResult" type="board">
-		<id property="no" column="blog_no" />
+		<id property="no" column="board_no" />
 		<result property="title" column="board_title"/>
 		<result property="contents" column="board_contents"/>
 		<result property="regDate" column="board_regDate"/>
@@ -50,9 +50,10 @@
         	   f.uuid 		as file_uuid,
         	   f.fileName 	as file_fileName,
         	   f.filePath 	as file_filePath
-        from board b, file f 
+        from board b
+       	left OUTER JOIN file f 
+        ON f.boardNo = b.no
         where b.no = #{no}
-          AND f.boardNo = b.no
     </select>
     	
 	<select id="findPagenated" parameterType="searchInfo" resultType="board">

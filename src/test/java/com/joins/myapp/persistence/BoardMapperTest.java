@@ -37,7 +37,7 @@ public class BoardMapperTest {
     @Test
     public void testFindByNo() {
 	// 존재하는 게시물 번호로 확인해야 함.
-	BoardDTO board = boardMapper.findByNo(140L);
+	BoardDTO board = boardMapper.findByNo(339L);
 
 	log.info(board.toString());
     }
