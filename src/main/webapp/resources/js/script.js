@@ -4,8 +4,37 @@
 $(".moveToBoardDetail").on("click", function(e) {
 	e.preventDefault();
 	var no = $(this).attr("href");
-	$("#moveToBoardDetailForm").append("<input type='hidden' name='no' value=" + no + ">");
+	$('<input>').attr({
+	    type: 'hidden',
+	    name: 'no',
+	    value: no
+	}).appendTo('#moveToBoardDetailForm');
 	$("#moveToBoardDetailForm").submit();
+});
+
+/*
+ * boardCreate.jsp의 formData(multipart/form-data)를 받아 지정된 url에 ajax 요청
+ */
+$("#boardCreateForm").submit(function(e){
+	  e.preventDefault();
+	  var url = '/myapp/board/create';
+	  var formData = new FormData($("#form")[0]);
+	  $.ajax({
+		    url: url,
+		    type: 'POST',
+		    data: formData,
+		    contentType: false,
+		    processData: false,
+		    success: function (data) {
+		    	// DB에서 생성 성공 시 boardList 페이지로 이동한다.
+		    	window.location.href = '/myapp/board/list';
+		    },
+		    fail: function(data){
+		    	// DB에서 업데이트 실패 시 실패 메시지를 띄운다. 
+		        alert(data);
+		    }
+	  });
+
 });
 
 /* 
@@ -44,7 +73,7 @@ $("#modifyBtn").on("click", function(e){
 /*
  * boardDetail.jsp의 formData(multipart/form-data)를 받아 지정된 url에 ajax 요청
  */
-$("#form").submit(function(e){
+$("#boardDetailform").submit(function(e){
 	  e.preventDefault();
 	  var url = '/myapp/board/update';
 	  var formData = new FormData($("#form")[0]);
@@ -60,9 +89,10 @@ $("#form").submit(function(e){
 		    },
 		    fail: function(data){
 		    	// DB에서 업데이트 실패 시 실패 메시지를 띄운다. 
-		        alert('request failed');
+		        alert(data);
 		    }
 	  });
-
 });
+
+
 

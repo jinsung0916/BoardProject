@@ -7,11 +7,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>boardCreate</title>
+	<link rel="stylesheet" type="text/css" href="/myapp/resources/css/style.css">
 	<script src="/myapp/resources/js/jquery-3.3.1.min.js"></script>
 </head>
 
 <body>
-	<form method="POST" action="/myapp/board/create" enctype="multipart/form-data">
+	<form id="boardCreateForm" method="POST" enctype="multipart/form-data">
 		<fieldset>
 			<div class="formGroup">
 				<label>제목: </label>

@@ -26,7 +26,11 @@
 	$(".moveToOtherPage").on("click", function(e) {
 		e.preventDefault();
 		var page = $(this).attr("href");
-		$("#moveToOtherPageForm").append("<input type='hidden' name='page' value=" + page + ">");
+		$('<input>').attr({
+		    type: 'hidden',
+		    name: 'page',
+		    value: page
+		}).appendTo('#moveToOtherPageForm');
 		$("#moveToOtherPageForm").submit(); 
 	});
 </script>

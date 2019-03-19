@@ -8,6 +8,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>boardList</title>
+	<link rel="stylesheet" type="text/css" href="/myapp/resources/css/style.css">
 	<script src="/myapp/resources/js/jquery-3.3.1.min.js"></script>
 </head>
 	
@@ -56,7 +57,7 @@
 		<jsp:include page="../pagination.jsp"></jsp:include>
 	</div>
 	
-	<form id="moveToBoardDetailForm" method="POST" action='/myapp/board/detail' style="display:none" >
+	<form id="moveToBoardDetailForm" class="hiddenForm" method="POST" action='/myapp/board/detail'>
 		<input type='hidden' name='page' value="${pageObj.searchInfo.page}">
 		<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
 		<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
