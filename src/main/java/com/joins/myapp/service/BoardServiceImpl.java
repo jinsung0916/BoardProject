@@ -13,8 +13,6 @@ import com.joins.myapp.persistence.BoardMapper;
 import com.joins.myapp.persistence.FileMapper;
 import com.joins.myapp.util.PaginationHandler;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
 public class BoardServiceImpl implements BoardService {
     
@@ -113,8 +111,4 @@ public class BoardServiceImpl implements BoardService {
 	return fileMapper.findByUUID(uuid);
     }
     
-    @Override
-    public boolean deleteFile(String uuid) {
-	return fileMapper.delete(uuid) == 1;
-    }
 }

@@ -21,5 +21,4 @@ public interface BoardService {
 
     FileDTO getFileByUUID(String uuid);
 
-    boolean deleteFile(String uuid);
 }
