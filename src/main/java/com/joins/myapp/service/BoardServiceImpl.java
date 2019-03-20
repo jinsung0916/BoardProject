@@ -51,8 +51,7 @@ public class BoardServiceImpl implements BoardService {
 	List<BoardDTO> boards = boardMapper.findPagenated(searchInfo);
 	
 	int totalSizeOfTable = boardMapper.countAll(searchInfo);
-	PageDTO<BoardDTO> pageObj = PaginationHandler.generatePageDTO(searchInfo, pagesPerOneLine, totalSizeOfTable);
-	pageObj.setContents(boards);	
+	PageDTO<BoardDTO> pageObj = PaginationHandler.generatePageDTO(boards, searchInfo, pagesPerOneLine, totalSizeOfTable);
 	return pageObj;
     }
     
