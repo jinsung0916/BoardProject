@@ -17,10 +17,9 @@ $(".moveToBoardDetail").on("click", function(e) {
  */
 $("#boardCreateForm").submit(function(e){
 	  e.preventDefault();
-	  var url = '/myapp/board/create';
 	  var formData = new FormData($("#boardCreateForm")[0]);
 	  $.ajax({
-		    url: url,
+		    url: '/myapp/board/create',
 		    type: 'POST',
 		    data: formData,
 		    contentType: false,
@@ -45,21 +44,21 @@ var isDisabled = true; // modify 버튼 초기 상태: 비활성화
 function handleModifyBtn(){
 	 var title = $("#title"); 
      var contents = $("#contents");
-     var uploadFile = $("#file");
+     var fileUploadDiv = $("#fileUploadDiv");
      var uploadBtn = $("#uploadBtn");
      
      if(!isDisabled){
     	 // modify 버튼이 활성화 되어 있을 때
     	 title.prop('disabled', true);
          contents.prop('disabled', true);
-         uploadFile.prop('disabled', true);
+         fileUploadDiv.css({'display': 'none'});
          uploadBtn.prop('type', 'hidden');
      }
      else{
     	 // modify 버튼이 비활성화 되어 있을 때
          title.prop('disabled', false);
          contents.prop('disabled', false);
-         uploadFile.prop('disabled', false);
+         fileUploadDiv.css({'display': ''});
          uploadBtn.prop('type', 'submit');
      }
      isDisabled = !isDisabled;
@@ -71,14 +70,63 @@ $("#modifyBtn").on("click", function(e){
 });
 
 /*
+ * boardDetail.jsp 파일 업로드 폼 처리
+ */
+var currentListOfFile = [];
+
+$("#plusBtn").on("click", function(e) {
+	$("#file").click();
+});
+
+$("#minusBtn").on("click", function(e){
+	var minusList = $("#fileListDiv").children();
+	for(item of minusList){
+		if(item.checked) {
+			currentListOfFile = removeFromCurrentListOfFile(currentListOfFile, item.value);
+		}
+	}
+	modifyUploadFileListDiv();
+});
+
+$("#file").change(function(){
+	var fileList = $("#file")[0].files;
+	for(var i=0; i<fileList.length; i++) {
+		currentListOfFile.push(fileList[i]);
+	}
+	modifyUploadFileListDiv();
+});
+
+
+function modifyUploadFileListDiv(){
+	$("#fileListDiv").empty();
+	for(var i=0; i < currentListOfFile.length; i++) {
+		$("#fileListDiv").append("<input type='checkbox' value='" + currentListOfFile[i].name + "'/>" +  currentListOfFile[i].name + "<br/>");
+	}
+}
+
+function removeFromCurrentListOfFile(arr, value) {
+   return arr.filter(function(item) {
+       return item.name != value;
+   });
+}
+
+FileList = function(items) {
+    const dataTransfer = new DataTransfer;
+    for (let item of items) {
+    	dataTransfer.items.add(item);
+    }
+    return dataTransfer.files;
+};
+
+/*
  * boardDetail.jsp의 formData(multipart/form-data)를 받아 지정된 url에 ajax 요청
  */
 $("#boardDetailform").submit(function(e){
 	  e.preventDefault();
-	  var url = '/myapp/board/update';
+	  $("#file")[0].files = new FileList(currentListOfFile);
 	  var formData = new FormData($("#boardDetailform")[0]);
 	  $.ajax({
-		    url: url,
+		    url: '/myapp/board/update',
 		    type: 'POST',
 		    data: formData,
 		    contentType: false,
@@ -94,5 +142,26 @@ $("#boardDetailform").submit(function(e){
 	  });
 });
 
+/*
+ *
+ */
+$(".fileDownload").on("click", function(e){
+	e.preventDefault();
+	
+	var uuid = $(this).attr("href"); 
+	
+	var form = $('<form>').attr({
+	    method: 'POST',
+	    action: '/myapp/board/download'
+	});
 
+	var input = $('<input>').attr({
+		type: 'hidden',
+	    name: 'uuid',
+	    value: uuid
+	}).appendTo(form);
+	
+	$(document.body).append(form);
+	form.submit();
+});
 

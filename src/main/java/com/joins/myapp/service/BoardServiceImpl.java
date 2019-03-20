@@ -16,7 +16,6 @@ import com.joins.myapp.util.PaginationHandler;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Slf4j
 public class BoardServiceImpl implements BoardService {
     
     @Autowired
@@ -112,5 +111,10 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public FileDTO getFileByUUID(String uuid) {
 	return fileMapper.findByUUID(uuid);
+    }
+    
+    @Override
+    public boolean deleteFile(String uuid) {
+	return fileMapper.delete(uuid) == 1;
     }
 }

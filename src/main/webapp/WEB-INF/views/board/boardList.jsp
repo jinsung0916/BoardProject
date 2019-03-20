@@ -57,7 +57,7 @@
 		<jsp:include page="../pagination.jsp"></jsp:include>
 	</div>
 	
-	<form id="moveToBoardDetailForm" class="hiddenForm" method="POST" action='/myapp/board/detail'>
+	<form id="moveToBoardDetailForm" method="POST" action='/myapp/board/detail'>
 		<input type='hidden' name='page' value="${pageObj.searchInfo.page}">
 		<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
 		<input type='hidden' name='search' value="${pageObj.searchInfo.search}">

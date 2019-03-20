@@ -29,21 +29,41 @@
 				<textarea id="contents" name="contents" disabled>${board.contents}</textarea>
 			</div>
 			
-			<div class="formGroup">
-				<input id="file" type="file" name="uploadFile" multiple disabled />
+			
+			<!-- 첨부파일 다운로드 -->
+			<div style="height: 150px;">
+				<div>첨부파일</div>
+				<div style="border: solid 1px; height: 80%; overflow: auto">
+					<c:forEach var="file" items="${board.fileList}">
+						<div class="hoverDiv"><a class="fileDownload" href="${file.uuid}">${file.fileName}</a></div>
+					</c:forEach>
+				</div>
+			</div>
+			
+			<!-- 파일 업로드 폼-->
+			<div style="display: none;">
+				<input id="file" type="file" name="uploadFile" multiple/>
+			</div>
+			<div id="fileUploadDiv" style="display: none; height: 150px;">
+				<div>업로드할 파일</div>	
+				<div style="height: 80%;">
+					<div id="fileListDiv" style="border: solid 1px; float: left; width: 85%; height:100%; overflow: auto">
+					</div>
+					<div style="float: right; width:14%;" align="center">
+						<button id="plusBtn" type="button">파일추가</button><br/>
+						<button id="minusBtn" type="button">파일삭제</button><br/>
+					</div>
+				</div>
 			</div>
 			
 			<div>
-				<c:forEach var="file" items="${board.fileList}">
-					<a href="/myapp/board/download?uuid=${file.uuid}">${file.fileName}</a>
-				</c:forEach>
+				<!-- 수정버튼 -->
+			    <input type="button" id="modifyBtn" value="modify">
+			    
+			    <!-- 전송버튼 -->
+			    <input type="hidden" id="uploadBtn" value="submit">
 			</div>
 			
-			<!-- 수정버튼 -->
-		    <input type="button" id="modifyBtn" value="modify">
-		    
-		    <!-- 전송버튼 -->
-		    <input type="hidden" id="uploadBtn" value="submit">
 		</fieldset>
 	</form>
        

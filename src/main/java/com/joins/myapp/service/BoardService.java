@@ -20,4 +20,6 @@ public interface BoardService {
     boolean attachFile(FileDTO file);
 
     FileDTO getFileByUUID(String uuid);
+
+    boolean deleteFile(String uuid);
 }
