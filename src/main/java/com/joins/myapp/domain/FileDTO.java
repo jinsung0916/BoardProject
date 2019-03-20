@@ -18,6 +18,6 @@ public class FileDTO {
 
     @Override
     public String toString() {
-	return filePath + File.separator + uuid + "_" + fileName;
+	return filePath + File.separator +  fileName;
     };
 }

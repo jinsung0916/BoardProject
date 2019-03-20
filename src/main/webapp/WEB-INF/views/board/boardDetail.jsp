@@ -9,10 +9,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>BoardDetail</title>
+	<link rel="stylesheet" type="text/css" href="/myapp/resources/css/style.css">
     <script src="/myapp/resources/js/jquery-3.3.1.min.js"></script>
 </head>
 <body>		
-	<form id="form" method="POST" action="/myapp/board/update" enctype="multipart/form-data">
+	<form id="boardDetailform" method="POST" enctype="multipart/form-data">
 		<fieldset>
 			<div class="hiddenFormGroup">
 				<input id="no" type="hidden" name="no" value="${board.no}" />
@@ -29,7 +30,6 @@
 			</div>
 			
 			<div class="formGroup">
-				<label for="file">첨부파일: </label>
 				<input id="file" type="file" name="uploadFile" multiple disabled />
 			</div>
 			
@@ -47,7 +47,7 @@
 		</fieldset>
 	</form>
        
-    <form id="moveToBoardListForm" method="POST" action='/myapp/board/list' style="display:none" >
+    <form id="moveToBoardListForm" class="hiddenForm" method="POST" action='/myapp/board/list'>
 		<input type='hidden' name='page' value="${searchInfo.page}">
 		<input type='hidden' name='choose' value="${searchInfo.choose}">
 		<input type='hidden' name='search' value="${searchInfo.search}">

@@ -13,7 +13,10 @@ import com.joins.myapp.persistence.BoardMapper;
 import com.joins.myapp.persistence.FileMapper;
 import com.joins.myapp.util.PaginationHandler;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class BoardServiceImpl implements BoardService {
     
     @Autowired
@@ -31,8 +34,6 @@ public class BoardServiceImpl implements BoardService {
     public BoardDTO findOne(long id) {
 	// TODO 조인으로 세부정보를 조회하도록 수정
 	BoardDTO board = boardMapper.findByNo(id);
-	List<FileDTO> fileList = fileMapper.findByBoardNo(id);
-	board.setFileList(fileList);
 	return board;
     }
     

@@ -10,10 +10,6 @@
     	DELETE FROM file
     	WHERE uuid = #{uuid}
     </delete>
-	
-	<select id="findByBoardNo" resultType="file">
-        SELECT * FROM file WHERE boardNo = #{boardNo}
-    </select>
     
     <select id="findByUUID" resultType="file">
         SELECT * FROM file WHERe uuid = #{uuid}

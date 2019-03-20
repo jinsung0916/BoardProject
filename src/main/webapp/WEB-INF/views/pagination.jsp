@@ -13,10 +13,10 @@
 </c:if>
 
 <form id="moveToOtherPageForm" method="POST" action='/myapp/board/list' style="display:none" >
-		<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
-		<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
-		<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
-		<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
+	<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
+	<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
+	<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
+	<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
 </form>
 
 <script>
@@ -26,7 +26,11 @@
 	$(".moveToOtherPage").on("click", function(e) {
 		e.preventDefault();
 		var page = $(this).attr("href");
-		$("#moveToOtherPageForm").append("<input type='hidden' name='page' value=" + page + ">");
+		$('<input>').attr({
+		    type: 'hidden',
+		    name: 'page',
+		    value: page
+		}).appendTo('#moveToOtherPageForm');
 		$("#moveToOtherPageForm").submit(); 
 	});
 </script>
