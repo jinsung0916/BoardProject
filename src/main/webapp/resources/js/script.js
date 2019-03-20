@@ -119,7 +119,7 @@ $("#minusBtn").on("click", function(e){
 			currentListOfFile = removeFromCurrentListOfFile(currentListOfFile, item.value);
 		}
 	}
-	modifyUploadFileListDiv();
+	modifyFileListDiv();
 });
 
 /*
@@ -158,7 +158,7 @@ $("#boardDetailform").submit(function(e){
 });
 
 /*
- * 파일 배열을 fileList 객체로 변환한다.
+ * 현재 업로드 파일 목록 Array를 fileList 객체로 변환한다.
  */ 
 FileList = function(items) {
     const dataTransfer = new DataTransfer;
