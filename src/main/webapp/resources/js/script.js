@@ -96,7 +96,6 @@ $("#file").change(function(){
 	modifyUploadFileListDiv();
 });
 
-
 function modifyUploadFileListDiv(){
 	$("#fileListDiv").empty();
 	for(var i=0; i < currentListOfFile.length; i++) {
@@ -123,7 +122,9 @@ FileList = function(items) {
  */
 $("#boardDetailform").submit(function(e){
 	  e.preventDefault();
-	  $("#file")[0].files = new FileList(currentListOfFile);
+	  var newFileList = new FileList(currentListOfFile);
+	  currentListOfFile = [];
+	  $("#file")[0].files = newFileList;
 	  var formData = new FormData($("#boardDetailform")[0]);
 	  $.ajax({
 		    url: '/myapp/board/update',
@@ -143,24 +144,20 @@ $("#boardDetailform").submit(function(e){
 });
 
 /*
- *
+ * BoardDetail.jsp POST 방식의 파일 다운로드 처리
  */
 $(".fileDownload").on("click", function(e){
 	e.preventDefault();
-	
 	var uuid = $(this).attr("href"); 
-	
 	var form = $('<form>').attr({
 	    method: 'POST',
 	    action: '/myapp/board/download'
 	});
-
 	var input = $('<input>').attr({
 		type: 'hidden',
 	    name: 'uuid',
 	    value: uuid
 	}).appendTo(form);
-	
 	$(document.body).append(form);
 	form.submit();
 });
