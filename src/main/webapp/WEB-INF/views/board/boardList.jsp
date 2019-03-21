@@ -30,7 +30,7 @@
 	 	 					<input type="radio" name="choose" value="contents">내용
 						</c:otherwise>
 					</c:choose>
-					<input type="submit" value="검색">
+					<button id="searchBtn" type="button">검색</button>
 				</form>
 			</div>
 			<div align="right">

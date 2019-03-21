@@ -13,6 +13,30 @@ $(".moveToBoardDetail").on("click", function(e) {
 });
 
 /*
+ * BoardList.jsp 에서 검색버튼을 클릭했을 때 AJAX요청을 수행한다.
+ */
+$("#searchBtn").on("click", function(e){
+	  var formData = new FormData($("#searchForm")[0]);
+	  $.ajax({
+		    url: '/myapp/board/list',
+		    type: 'POST',
+		    data: formData,
+		    processData: false,
+		    contentType: false,
+		    success: function () {
+		    	$("#searchForm").submit();
+		    },
+		    error: function(xhr){
+		    	if(xhr.status == 404) {
+		    		alert("검색 결과가 존재하지 않습니다.");
+		    	}
+		    }
+	  });
+
+});
+
+
+/*
  * boardCreate.jsp의 formData(multipart/form-data)를 받아 지정된 url에 ajax를 호출한다.
  */
 $("#boardCreateForm").submit(function(e){
@@ -28,12 +52,14 @@ $("#boardCreateForm").submit(function(e){
 		    	// DB에서 생성 성공 시 boardList 페이지로 이동한다.
 		    	window.location.href = '/myapp/board/list';
 		    },
-		    fail: function(data){
-		    	// DB에서 업데이트 실패 시 실패 메시지를 띄운다. 
-		        alert(data);
+		    error: function(xhr){
+		        if(xhr.status == 400) {
+		        	alert("제목을 입력하세요.")
+		        } else if(xhr.status == 500) {
+		        	alert("게시글 등록 중 문제가 발생했습니다.");
+		        }
 		    }
 	  });
-
 });
 
 /* 
@@ -150,9 +176,12 @@ $("#boardDetailform").submit(function(e){
 		    	// DB에서 업데이트 성공 시 이전에 위치했던 boardList 페이지로 이동한다.
 		    	$("#moveToBoardListForm").submit();
 		    },
-		    fail: function(data){
-		    	// DB에서 업데이트 실패 시 실패 메시지를 띄운다. 
-		        alert(data);
+		    error: function(xhr){
+		        if(xhr.status == 400) {
+		        	alert("제목을 입력하세요.")
+		        } else if(xhr.status == 500) {
+		        	alert("게시글 갱신 중 문제가 발생했습니다.");
+		        }
 		    }
 	  });
 });

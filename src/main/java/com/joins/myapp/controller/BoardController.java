@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.joins.myapp.domain.BoardDTO;
 import com.joins.myapp.domain.FileDTO;
 import com.joins.myapp.domain.PageDTO;
 import com.joins.myapp.domain.SearchInfoDTO;
+import com.joins.myapp.exception.ResourceNotFoundException;
 import com.joins.myapp.service.BoardService;
 import com.joins.myapp.util.FileDownloadHandler;
 import com.joins.myapp.util.FileUploadHandler;
@@ -66,7 +68,13 @@ public class BoardController {
 	}
 	
 	PageDTO<BoardDTO> pageObj = service.findPaginated( 
-		defaultPagesPerOneLine, searchInfo);
+		defaultPagesPerOneLine, searchInfo);	
+	
+	if(pageObj.getContents().size() == 0) {
+	   // 검색 결과가 존재하지 않을 경우 예외를 발생시킨다.
+	   throw new ResourceNotFoundException("검색 결과가 존재하지 않습니다.");
+	}
+	
 	model.addAttribute("pageObj", pageObj);
 	return "board/boardList";
     }
@@ -80,6 +88,11 @@ public class BoardController {
     @PostMapping("/detail")
     public String boardDetail(long no, SearchInfoDTO searchInfo, Model model) {
 	BoardDTO board = service.findOne(no);
+	if(board == null) {
+	    // 해당 게시글이 존재하지 않을 경우 예외를 발생시킨다.
+	    throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+	}
+	
 	model.addAttribute("board", board);
 	model.addAttribute("searchInfo", searchInfo);
 	return "board/boardDetail";
@@ -105,9 +118,15 @@ public class BoardController {
     @PostMapping("/create")
     @ResponseBody
     public ResponseEntity<String> boardCreate(BoardDTO board, MultipartFile[] uploadFile) {
+	if("".equals(board.getTitle())) {
+	    // 게시글 제목이 존재하지 않을 경우 400을 반환한다.
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목이 존재하지 않습니다.");
+	}
+	
 	if(!service.create(board)) {
+	    // DB에서 INSERT가 실패할 경우 500을 반환한다.
 	    log.error("게시글 생성 실패");
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 생성 실패");
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 등록 중 문제가 발생했습니다.");
 	}
 	    
 	ResponseEntity<String> result = null;
@@ -115,8 +134,9 @@ public class BoardController {
 	    fileUploadProcess(board, uploadFile);
 	    result = ResponseEntity.status(HttpStatus.ACCEPTED).build();
 	} catch (Exception e) {
+	    // 파일 업로드에 실패할 경우 500을 반환한다.
 	    log.error(e.getMessage());
-	    result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 실패");
+	    result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 문제가 발생했습니다.");
 	}
 	return result;
     }
@@ -130,9 +150,15 @@ public class BoardController {
     @PostMapping("/update")
     @ResponseBody
     public ResponseEntity<String> boardUpdate(BoardDTO board, MultipartFile[] uploadFile) {
+	if("".equals(board.getTitle())) {
+	    // 게시글 제목이 존재하지 않을 경우 400을 반환한다.
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목을 입력하세요.");
+	}
+	
 	if(!service.update(board)) {
+	    // DB에서 UPDATE가 실패할 경우 500을 반환한다.
 	    log.error("게시글 업데이트 실패");
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 업데이트 실패");
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 등록 중 문제가 발생했습니다.");
 	}	
 	    
 	ResponseEntity<String> result = null;
@@ -140,8 +166,9 @@ public class BoardController {
 	    fileUploadProcess(board, uploadFile);
 	    result = ResponseEntity.status(HttpStatus.ACCEPTED).build();
 	} catch (Exception e) {
+	    // 파일 업로드에 실패할 경우 500을 반환한다.
 	    log.error(e.getMessage());
-	    result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 실패");
+	    result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 문제가 발생했습니다.");
 	}
 	return result;
     }
