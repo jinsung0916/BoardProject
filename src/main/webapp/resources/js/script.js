@@ -32,9 +32,7 @@ $("#searchBtn").on("click", function(e){
 		    	}
 		    }
 	  });
-
 });
-
 
 /*
  * boardCreate.jsp의 formData(multipart/form-data)를 받아 지정된 url에 ajax를 호출한다.
@@ -198,13 +196,12 @@ $(".fileDownload").on("click", function(e){
 	var form = $('<form>').attr({
 	    method: 'POST',
 	    action: '/myapp/board/download'
-	});
-	var input = $('<input>').attr({
-		type: 'hidden',
+	}).appendTo("body");
+	$('<input>').attr({
+	    type: 'hidden',
 	    name: 'uuid',
 	    value: uuid
 	}).appendTo(form);
-	$(document.body).append(form);
 	form.submit();
 });
 

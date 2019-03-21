@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.joins.myapp.domain.BoardDTO;
 import com.joins.myapp.domain.FileDTO;
 import com.joins.myapp.domain.PageDTO;
 import com.joins.myapp.domain.SearchInfoDTO;
+import com.joins.myapp.exception.ResourceNotFoundException;
 import com.joins.myapp.service.BoardService;
 import com.joins.myapp.util.FileDownloadHandler;
 import com.joins.myapp.util.FileUploadHandler;
@@ -51,16 +51,18 @@ public class BoardController {
     
     /**
      * 1. 개요: POST /board/search
-     * 2. 처리내용: 검색 결과가 존재하는지 확인한다.
+     * 2. 처리내용: 조회 결과가 존재하는지 확인한다.
      * 3. 입력 Data: 검색정보
      * 4. 출력 Data: HTTP 상태메시지
      */
     @PostMapping(value="/search", produces="text/plain;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> hasSearchResult(SearchInfoDTO searchInfo){
 	if(service.hasSearchResult(searchInfo)) {
+	    // 조회 결과가 존재할 때
 	    return ResponseEntity.status(HttpStatus.OK).build();
 	}
 	else {
+	    // 조회 결과가 존재하지 않을 때, 404를 반환한다.
 	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("검색 결과가 존재하지 않습니다.");
 	}
     }
@@ -73,7 +75,7 @@ public class BoardController {
      */
     @RequestMapping("/list")
     public String boardList(SearchInfoDTO searchInfo, Model model) {
-	if(searchInfo.getPage() == 0) {
+	if(searchInfo.getPage() <= 0) {
 	    // GET으로 접근 시 기본 페이지를 반환한다. 
 	    searchInfo.setPage(defaultPage);
 	}
@@ -84,7 +86,11 @@ public class BoardController {
 	
 	PageDTO<BoardDTO> pageObj = service.findPaginated( 
 		defaultPagesPerOneLine, searchInfo);	
-		
+	if(pageObj.getSearchInfo().getPage() > pageObj.getEndPage()) {
+	    // 잘못된 페이지를 요청했을 경우 예외를 발생시킨다.
+	    throw new ResourceNotFoundException();
+	}
+	
 	model.addAttribute("pageObj", pageObj);
 	return "board/boardList";
     }
@@ -100,7 +106,7 @@ public class BoardController {
 	BoardDTO board = service.findOne(no);
 	if(board == null) {
 	    // 해당 게시글이 존재하지 않을 경우 예외를 발생시킨다.
-	    throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+	    throw new ResourceNotFoundException();
 	}
 	
 	model.addAttribute("board", board);
@@ -191,17 +197,20 @@ public class BoardController {
     public @ResponseBody ResponseEntity<Resource> downloadFiles(@RequestParam("uuid") String uuid) {
 	FileDTO file = service.getFileByUUID(uuid);
 	String absoluteFilePath = file.toString();
-	Resource resource = FileDownloadHandler.downloadFile(absoluteFilePath);
 
+	Resource resource = null;
 	HttpHeaders headers = new HttpHeaders();
 	try {
-	    // 한글 파일이름이 깨지지 않도록 인코딩 처리 후 header에 파일 이름을 명시한다.
+	    resource = FileDownloadHandler.downloadFile(absoluteFilePath);
 	    headers.add("Content-Disposition",
 		    "attachment; filename=" + new String(resource.getFilename().getBytes("utf-8"), "ISO-8859-1"));
+	} catch (ResourceNotFoundException e) {
+	    // 경로에 파일이 존재하지 않으면 404를 반환한다.
+	    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	} catch (UnsupportedEncodingException e) {
+	    // 인코딩 에러가 발생했을 시 로그를 출력한다.
 	    log.error(e.getMessage());
 	}
-
 	return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
     }
         
