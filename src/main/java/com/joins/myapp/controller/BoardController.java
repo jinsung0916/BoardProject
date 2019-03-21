@@ -24,7 +24,6 @@ import com.joins.myapp.domain.BoardDTO;
 import com.joins.myapp.domain.FileDTO;
 import com.joins.myapp.domain.PageDTO;
 import com.joins.myapp.domain.SearchInfoDTO;
-import com.joins.myapp.exception.ResourceNotFoundException;
 import com.joins.myapp.service.BoardService;
 import com.joins.myapp.util.FileDownloadHandler;
 import com.joins.myapp.util.FileUploadHandler;
@@ -51,13 +50,29 @@ public class BoardController {
     private BoardService service;
     
     /**
+     * 1. 개요: POST /board/search
+     * 2. 처리내용: 검색 결과가 존재하는지 확인한다.
+     * 3. 입력 Data: 검색정보
+     * 4. 출력 Data: HTTP 상태메시지
+     */
+    @PostMapping(value="/search", produces="text/plain;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> hasSearchResult(SearchInfoDTO searchInfo){
+	if(service.hasSearchResult(searchInfo)) {
+	    return ResponseEntity.status(HttpStatus.OK).build();
+	}
+	else {
+	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("검색 결과가 존재하지 않습니다.");
+	}
+    }
+    
+    /**
      * 1. 개요: GET|POST /board/list 
      * 2. 처리내용: 게시글 목록 페이지를 반환한다. 
      * 3. 입력 Data: 페이지 번호, 페이지 당 게시글 수
      * 4. 출력 Data: 
      */
     @RequestMapping("/list")
-    public String BoardList(SearchInfoDTO searchInfo, Model model) {
+    public String boardList(SearchInfoDTO searchInfo, Model model) {
 	if(searchInfo.getPage() == 0) {
 	    // GET으로 접근 시 기본 페이지를 반환한다. 
 	    searchInfo.setPage(defaultPage);
@@ -69,12 +84,7 @@ public class BoardController {
 	
 	PageDTO<BoardDTO> pageObj = service.findPaginated( 
 		defaultPagesPerOneLine, searchInfo);	
-	
-	if(pageObj.getContents().size() == 0) {
-	   // 검색 결과가 존재하지 않을 경우 예외를 발생시킨다.
-	   throw new ResourceNotFoundException("검색 결과가 존재하지 않습니다.");
-	}
-	
+		
 	model.addAttribute("pageObj", pageObj);
 	return "board/boardList";
     }
@@ -115,9 +125,8 @@ public class BoardController {
      * 3. 입력 Data: 게시글 데이터와 업로드한 파일 
      * 4. 출력 Data: 응답 헤더와 상태메시지
      */
-    @PostMapping("/create")
-    @ResponseBody
-    public ResponseEntity<String> boardCreate(BoardDTO board, MultipartFile[] uploadFile) {
+    @PostMapping(value="/create", produces="text/plain;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> boardCreate(BoardDTO board, MultipartFile[] uploadFile) {
 	if("".equals(board.getTitle())) {
 	    // 게시글 제목이 존재하지 않을 경우 400을 반환한다.
 	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목이 존재하지 않습니다.");
@@ -147,9 +156,8 @@ public class BoardController {
      * 3. 입력 Data: 게시글 데이터, 첨부파일
      * 4. 출력 Data: 돌아갈 페이지 번호
      */
-    @PostMapping("/update")
-    @ResponseBody
-    public ResponseEntity<String> boardUpdate(BoardDTO board, MultipartFile[] uploadFile) {
+    @PostMapping(value="/update", produces="text/plain;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> boardUpdate(BoardDTO board, MultipartFile[] uploadFile) {
 	if("".equals(board.getTitle())) {
 	    // 게시글 제목이 존재하지 않을 경우 400을 반환한다.
 	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목을 입력하세요.");
@@ -180,8 +188,7 @@ public class BoardController {
      * 4. 출력 Data: 첨부파일
      */
     @PostMapping("/download")
-    @ResponseBody
-    public ResponseEntity<Resource> downloadFiles(@RequestParam("uuid") String uuid) {
+    public @ResponseBody ResponseEntity<Resource> downloadFiles(@RequestParam("uuid") String uuid) {
 	FileDTO file = service.getFileByUUID(uuid);
 	String absoluteFilePath = file.toString();
 	Resource resource = FileDownloadHandler.downloadFile(absoluteFilePath);

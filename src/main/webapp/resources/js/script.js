@@ -18,7 +18,7 @@ $(".moveToBoardDetail").on("click", function(e) {
 $("#searchBtn").on("click", function(e){
 	  var formData = new FormData($("#searchForm")[0]);
 	  $.ajax({
-		    url: '/myapp/board/list',
+		    url: '/myapp/board/search',
 		    type: 'POST',
 		    data: formData,
 		    processData: false,
@@ -28,7 +28,7 @@ $("#searchBtn").on("click", function(e){
 		    },
 		    error: function(xhr){
 		    	if(xhr.status == 404) {
-		    		alert("검색 결과가 존재하지 않습니다.");
+		    		alert(xhr.responseText);
 		    	}
 		    }
 	  });
@@ -53,11 +53,7 @@ $("#boardCreateForm").submit(function(e){
 		    	window.location.href = '/myapp/board/list';
 		    },
 		    error: function(xhr){
-		        if(xhr.status == 400) {
-		        	alert("제목을 입력하세요.")
-		        } else if(xhr.status == 500) {
-		        	alert("게시글 등록 중 문제가 발생했습니다.");
-		        }
+		    	alert(xhr.responseText);
 		    }
 	  });
 });
@@ -177,11 +173,7 @@ $("#boardDetailform").submit(function(e){
 		    	$("#moveToBoardListForm").submit();
 		    },
 		    error: function(xhr){
-		        if(xhr.status == 400) {
-		        	alert("제목을 입력하세요.")
-		        } else if(xhr.status == 500) {
-		        	alert("게시글 갱신 중 문제가 발생했습니다.");
-		        }
+		    	alert(xhr.responseText);
 		    }
 	  });
 });

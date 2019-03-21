@@ -2,7 +2,6 @@ package com.joins.myapp.exception;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,21 +13,19 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class GlobalControllerExceptionHandler  {
     public static final String DEFAULT_ERROR_VIEW = "exception/error";
 
+    /**
+     * 1. 개요: 
+     * 2. 처리내용: NoHandlerFoundException을 제외한 모든 예외를 처리한다.
+     * 3. 입력 Data:  
+     * 4. 출력 Data: ModelAndView
+     */
     @ExceptionHandler(value = Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
-      // If the exception is annotated with @ResponseStatus rethrow it and let
-      // the framework handle it
-      // at the start of this post.
-      // AnnotationUtils is a Spring Framework utility class.
-      if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null)
-        throw e;
-
-      // Otherwise setup and send the user to a default error-view.
-      ModelAndView mav = new ModelAndView();
-      mav.addObject("exception", e);
-      mav.addObject("url", req.getRequestURL());
-      mav.setViewName(DEFAULT_ERROR_VIEW);
-      return mav;
+	ModelAndView mav = new ModelAndView();
+	mav.addObject("exception", e);
+	mav.addObject("url", req.getRequestURL());
+	mav.setViewName(DEFAULT_ERROR_VIEW);
+	return mav;
     }
     
     /**

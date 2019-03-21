@@ -55,6 +55,11 @@ public class BoardServiceImpl implements BoardService {
 	return pageObj;
     }
     
+    @Override
+    public boolean hasSearchResult(SearchInfoDTO searchInfo) {
+	return boardMapper.countAll(searchInfo) != 0;
+    }
+    
     /**
      * 1. 개요:
      * 2. 처리내용: 새로운 게시글을 생성한다.
