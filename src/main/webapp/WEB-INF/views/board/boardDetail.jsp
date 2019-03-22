@@ -13,7 +13,7 @@
     <script src="/myapp/resources/js/jquery-3.3.1.min.js"></script>
 </head>
 <body>		
-	<form id="boardDetailform" method="POST" enctype="multipart/form-data">
+	<form id="boardDetailform" method="POST" enctype="multipart/form-data" style="width: 700px;">
 		<fieldset>
 			<div class="hiddenFormGroup">
 				<input id="no" type="hidden" name="no" value="${board.no}" />
@@ -58,16 +58,19 @@
 			
 			<div>
 				<!-- 수정버튼 -->
-			    <input type="button" id="modifyBtn" value="modify">
+			    <button id="modifyBtn" type="button">modify</button>
 			    
 			    <!-- 전송버튼 -->
-			    <input type="hidden" id="uploadBtn" value="submit">
+			    <input id="uploadBtn" type="hidden" value="submit">
+			    
+			    <!-- 삭제버튼 -->
+			    <button id="deleteBtn" type="button" style="display: none; background-color: red">delete</button>
 			</div>
 			
 		</fieldset>
 	</form>
        
-    <form id="moveToBoardListForm" class="hiddenForm" method="POST" action='/myapp/board/list'>
+    <form id="moveToBoardListForm" method="POST" action='/myapp/board/list'>
 		<input type='hidden' name='page' value="${searchInfo.page}">
 		<input type='hidden' name='choose' value="${searchInfo.choose}">
 		<input type='hidden' name='search' value="${searchInfo.search}">

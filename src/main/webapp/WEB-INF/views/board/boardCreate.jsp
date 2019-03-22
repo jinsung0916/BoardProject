@@ -12,9 +12,8 @@
 </head>
 
 <body>
-	<form id="boardCreateForm" method="POST" enctype="multipart/form-data">
+	<form id="boardCreateForm" method="POST" enctype="multipart/form-data" style="width: 700px;">
 		<fieldset>
-			
 			<div class="formGroup">
 				<label>제목: </label>
 				<input type="text" name="title" />

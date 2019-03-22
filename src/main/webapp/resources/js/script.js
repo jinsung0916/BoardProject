@@ -35,66 +35,20 @@ $("#searchBtn").on("click", function(e){
 });
 
 /*
- * boardCreate.jsp의 formData(multipart/form-data)를 받아 지정된 url에 ajax를 호출한다.
- */
-$("#boardCreateForm").submit(function(e){
-	  e.preventDefault();
-	  var formData = new FormData($("#boardCreateForm")[0]);
-	  $.ajax({
-		    url: '/myapp/board/create',
-		    type: 'POST',
-		    data: formData,
-		    contentType: false,
-		    processData: false,
-		    success: function (data) {
-		    	// DB에서 생성 성공 시 boardList 페이지로 이동한다.
-		    	window.location.href = '/myapp/board/list';
-		    },
-		    error: function(xhr){
-		    	alert(xhr.responseText);
-		    }
-	  });
-});
-
-/* 
- * boardDetail.jsp의 modify 버튼을 클릭했을 때 수정 모드로 전환한다.
- */
-$("#modifyBtn").on("click", function(e){
-	e.preventDefault();
-	handleModifyBtn();
-});
-
-var isDisabled = true; // modify 버튼 초기 상태: 비활성화
-
-function handleModifyBtn(){
-	 var title = $("#title"); 
-     var contents = $("#contents");
-     var fileUploadDiv = $("#fileUploadDiv");
-     var uploadBtn = $("#uploadBtn");
-     
-     if(!isDisabled){
-    	 // modify 버튼이 활성화 되어 있을 때
-    	 title.prop('disabled', true);
-         contents.prop('disabled', true);
-         fileUploadDiv.css({'display': 'none'});
-         uploadBtn.prop('type', 'hidden');
-     }
-     else{
-    	 // modify 버튼이 비활성화 되어 있을 때
-         title.prop('disabled', false);
-         contents.prop('disabled', false);
-         fileUploadDiv.css({'display': ''});
-         uploadBtn.prop('type', 'submit');
-     }
-     isDisabled = !isDisabled;
-}
-
-
-
-/*
- * boardDetail.jsp 파일 업로드 폼 처리
+ * boardCreate.jsp, boardDetail.jsp 파일 업로드 폼 처리
  */
 var currentListOfFile = []; // 현재 업로드 파일 목록
+
+/*
+ * 현재 업로드 파일 목록 Array를 fileList 객체로 변환한다.
+ */ 
+FileList = function(items) {
+    const dataTransfer = new DataTransfer;
+    for (let item of items) {
+    	dataTransfer.items.add(item);
+    }
+    return dataTransfer.files;
+};
 
 /*
  * '파일추가' 버튼을 클릭하면 file input을 활성화한다.
@@ -149,7 +103,69 @@ function removeFromCurrentListOfFile(arr, value) {
 	   return arr.filter(function(item) {
 	       return item.name != value;
 	   });
-	}
+}
+
+/*
+ * boardCreate.jsp의 formData(multipart/form-data)를 받아 지정된 url에 ajax를 호출한다.
+ */
+$("#boardCreateForm").submit(function(e){
+	  e.preventDefault();
+	  var newFileList = new FileList(currentListOfFile);
+	  currentListOfFile = []; // #file 의 change 이벤트에 영향을 미치지 않도록 현재 업로드 파일 목록을 비운다.
+	  $("#file")[0].files = newFileList;
+	  var formData = new FormData($("#boardCreateForm")[0]);
+	  $.ajax({
+		    url: '/myapp/board/create',
+		    type: 'POST',
+		    data: formData,
+		    contentType: false,
+		    processData: false,
+		    success: function (data) {
+		    	// DB에서 생성 성공 시 boardList 페이지로 이동한다.
+		    	window.location.href = '/myapp/board/list';
+		    },
+		    error: function(xhr){
+		    	alert(xhr.responseText);
+		    }
+	  });
+});
+
+/* 
+ * boardDetail.jsp의 modify 버튼을 클릭했을 때 수정 모드로 전환한다.
+ */
+$("#modifyBtn").on("click", function(e){
+	handleModifyBtn();
+});
+
+var isDisabled = true; // modify 버튼 초기 상태: 비활성화
+
+function handleModifyBtn(){
+	 var title = $("#title"); 
+     var contents = $("#contents");
+     var fileUploadDiv = $("#fileUploadDiv");
+     var uploadBtn = $("#uploadBtn");
+     var deleteBtn = $("#deleteBtn");
+     
+     if(!isDisabled){
+    	 // modify 버튼이 활성화 되어 있을 때
+    	 title.prop('disabled', true);
+         contents.prop('disabled', true);
+         fileUploadDiv.css({'display': 'none'});
+         uploadBtn.prop('type', 'hidden');
+         deleteBtn.css({'display': 'none'});
+     }
+     else{
+    	 // modify 버튼이 비활성화 되어 있을 때
+         title.prop('disabled', false);
+         contents.prop('disabled', false);
+         fileUploadDiv.css({'display': ''});
+         uploadBtn.prop('type', 'submit');
+         deleteBtn.css({'display': ''});
+     }
+     isDisabled = !isDisabled;
+}
+
+
 
 /*
  * boardDetail.jsp의 formData(multipart/form-data)를 받아 지정된 url에 ajax를 호출한다.
@@ -177,17 +193,6 @@ $("#boardDetailform").submit(function(e){
 });
 
 /*
- * 현재 업로드 파일 목록 Array를 fileList 객체로 변환한다.
- */ 
-FileList = function(items) {
-    const dataTransfer = new DataTransfer;
-    for (let item of items) {
-    	dataTransfer.items.add(item);
-    }
-    return dataTransfer.files;
-};
-
-/*
  * BoardDetail.jsp 에서 파일 이름을 클릭했을 때 POST 방식으로 다운로드 하도록 이벤트를 처리한다.
  */
 $(".fileDownload").on("click", function(e){
@@ -205,3 +210,20 @@ $(".fileDownload").on("click", function(e){
 	form.submit();
 });
 
+/* BoardDetail.jsp 에서 'delete'버튼을 클릭하면 게시글 삭제 이벤트를 수행한다.
+ * 
+ */
+$("#deleteBtn").on("click", function(e){
+	 $.ajax({
+		    url: '/myapp/board/delete',
+		    type: 'POST',
+		    data: {no: $("#no").attr("value")},
+		    success: function (data) {
+		    	// DB에서 삭제 성공 시 이전에 위치했던 boardList 페이지로 이동한다.
+		    	$("#moveToBoardListForm").submit();
+		    },
+		    error: function(xhr){
+		    	alert(xhr.responseText);
+		    }
+	  });
+});

@@ -6,9 +6,9 @@
         VALUES (#{uuid}, #{fileName}, #{filePath}, #{boardNo})
     </insert>
      
-    <delete id="delete" parameterType="String">
+    <delete id="deleteAll" parameterType="long">
     	DELETE FROM file
-    	WHERE uuid = #{uuid}
+    	WHERE boardNo = #{boardNo}
     </delete>
     
     <select id="findByUUID" resultType="file">

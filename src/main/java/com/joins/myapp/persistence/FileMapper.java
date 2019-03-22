@@ -6,7 +6,7 @@ public interface FileMapper {
 
     public int insert(FileDTO file);
 
-    public int delete(String uuid);
+    public int deleteAll(long boardNo);
 
     public FileDTO findByUUID(String uuid);
 }
