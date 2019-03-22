@@ -90,6 +90,7 @@ public class BoardServiceImpl implements BoardService {
      */
     @Override
     public boolean deleteById(long id) {
+	fileMapper.deleteAll(id); 
 	return boardMapper.delete(id) == 1;
     }
     

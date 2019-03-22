@@ -36,14 +36,14 @@ public class FileUploadHandler {
     /**
      * 1. 개요:
      * 2. 처리내용: 업로드한 파일을 파일시스템에 저장한다.
-     * 3. 입력 Data: 파일 리스트, 파일을 저장할 루트 경로
+     * 3. 입력 Data: 파일 리스트, 파일을 저장할 루트 경로, 폴더 이름(게시글번호)
      * 4. 출력 Data: 파일 정보 리스트
      * @throws IOException 
      * @throws IllegalStateException 
      */
-    public static List<FileDTO> uploadFile(MultipartFile[] uploadFile, String baseUploadFolder, long no) throws IllegalStateException, IOException {
+    public static List<FileDTO> uploadFile(MultipartFile[] uploadFile, String baseUploadDirectory, String folderName) throws IllegalStateException, IOException {
 	List<FileDTO> files = new ArrayList<FileDTO>();
-	File uploadFolder = getPath(baseUploadFolder, no);
+	File uploadFolder = getPath(baseUploadDirectory, folderName);
 	for (MultipartFile multipartFile : uploadFile) {
 	    // 업로드할 개별 파일의 경로와 이름을 지정하고 파일시스템에 저장한다.
 	    
@@ -70,8 +70,8 @@ public class FileUploadHandler {
      * 3. 입력 Data: 파일을 저장할 루트 경로, 게시글 번호
      * 4. 출력 Data: 파일 저장 경로 
      */
-    private static File getPath(String baseUploadFolder, long no) {
-	File uploadFolder = new File(baseUploadFolder, String.valueOf(no));
+    private static File getPath(String baseUploadDirectory, String folderName) {
+	File uploadFolder = new File(baseUploadDirectory, folderName);
 	
 	if (!uploadFolder.exists()) {
 	    // 경로가 존재하지 않을 경우 새로운 디렉토리를 생성한다.

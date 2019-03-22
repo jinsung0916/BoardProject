@@ -25,6 +25,7 @@ import com.joins.myapp.domain.PageDTO;
 import com.joins.myapp.domain.SearchInfoDTO;
 import com.joins.myapp.exception.ResourceNotFoundException;
 import com.joins.myapp.service.BoardService;
+import com.joins.myapp.util.FileDeleteHandler;
 import com.joins.myapp.util.FileDownloadHandler;
 import com.joins.myapp.util.FileUploadHandler;
 
@@ -37,8 +38,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/board")
 @Slf4j
 public class BoardController {
-    @Value("#{file['baseUploadFolder']}")
-    private String baseUploadFolder;
+    @Value("#{file['baseUploadDirectory']}")
+    private String baseUploadDirectory;
     @Value("#{pagination['defaultPage']}")
     private int defaultPage;
     @Value("#{pagination['defaultItemsPerPage']}")
@@ -53,7 +54,7 @@ public class BoardController {
      * 1. 개요: POST /board/search
      * 2. 처리내용: 조회 결과가 존재하는지 확인한다.
      * 3. 입력 Data: 검색정보
-     * 4. 출력 Data: HTTP 상태메시지
+     * 4. 출력 Data: 응답 헤더와 상태메시지
      */
     @PostMapping(value="/search", produces="text/plain;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> hasSearchResult(SearchInfoDTO searchInfo){
@@ -160,7 +161,7 @@ public class BoardController {
      * 1. 개요: POST /board/update 
      * 2. 처리내용: ajax를 통해 게시글을 갱신한다.
      * 3. 입력 Data: 게시글 데이터, 첨부파일
-     * 4. 출력 Data: 돌아갈 페이지 번호
+     * 4. 출력 Data: 응답 헤더와 상태메시지
      */
     @PostMapping(value="/update", produces="text/plain;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> boardUpdate(BoardDTO board, MultipartFile[] uploadFile) {
@@ -171,7 +172,7 @@ public class BoardController {
 	
 	if(!service.update(board)) {
 	    // DB에서 UPDATE가 실패할 경우 500을 반환한다.
-	    log.error("게시글 업데이트 실패");
+	    log.error("게시글 갱신 실패");
 	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 등록 중 문제가 발생했습니다.");
 	}	
 	    
@@ -185,6 +186,31 @@ public class BoardController {
 	    result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 문제가 발생했습니다.");
 	}
 	return result;
+    }
+    
+    /**
+     * 1. 개요: POST board/delete
+     * 2. 처리내용: 게시글을 삭제한다.
+     * 3. 입력 Data: 게시글 번호
+     * 4. 출력 Data: 응답 헤더와 상태메시지
+     */
+    @PostMapping("/delete")
+    public @ResponseBody ResponseEntity<String> deleteBoard(long no) {
+	BoardDTO board = service.findOne(no);
+	if(board == null) {
+	    // 게시글이 존재하지 않을 때 404를 반환한다.
+	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 게시글이 존재하지 않습니다.");
+	} else if(!service.deleteById(no)) {
+	    // DB에서 게시글 삭제가 실패했을 때 500을 반환한다.
+	    log.error("게시글 삭제 실패");
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 삭제 중 문제가 발생했습니다.");
+	}
+	List<FileDTO> deleteFileList = board.getFileList();
+	if(!deleteFileList.isEmpty()) {
+	    // 첨부파일이 존재할 경우 첨부파일 폴더를 삭제한다.
+	    FileDeleteHandler.deleteFolder(deleteFileList.get(0).getFilePath());
+	}
+	return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     /**
@@ -225,7 +251,7 @@ public class BoardController {
     private void fileUploadProcess(BoardDTO board, MultipartFile[] uploadFile) throws IllegalStateException, IOException {
 	if (!FileUploadHandler.isEmpty(uploadFile)) {
 	    // 업로드 파일이 존재할 때
-	    List<FileDTO> list = FileUploadHandler.uploadFile(uploadFile, baseUploadFolder, board.getNo());
+	    List<FileDTO> list = FileUploadHandler.uploadFile(uploadFile, baseUploadDirectory, String.valueOf(board.getNo()));
 	    for(FileDTO file : list) {
 		// FileDTO에 Foreign Key 할당 후 DB에 저장한다.
 		file.setBoardNo(board.getNo());

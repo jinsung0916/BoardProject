@@ -30,7 +30,7 @@ public class FileMapperTest {
 
     @Test
     public void testDelete() {
-	log.info(mapper.delete("1") + "");
+	log.info(mapper.deleteAll(140L) + "");
     }
 
     @Test
