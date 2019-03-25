@@ -1,7 +1,7 @@
 /*
  * BoardList.jsp 에서 검색버튼을 클릭했을 때 AJAX요청을 수행한다.
  */
-$("#searchBtn").on("click", function (e) {
+$("#searchBtn").click(function (e) {
 	var formData = new FormData($("#searchForm")[0]);
 	$.ajax({
 		url: '/myapp/board/search',
@@ -21,7 +21,7 @@ $("#searchBtn").on("click", function (e) {
 /*
  * boardList.jsp 에서 게시글 링크를 클릭했을 때 POST 요청이 이루어지도록 이벤트를 처리한다.
  */
-$(".moveToBoardDetail").on("click", function (e) {
+$(".moveToBoardDetail").click(function (e) {
 	e.preventDefault();
 	var no = $(this).attr("href");
 	$('<input>').attr({
@@ -51,7 +51,7 @@ FileList = function (items) {
 /*
  * '파일추가' 버튼을 클릭하면 file input을 활성화한다.
  */
-$("#plusBtn").on("click", function (e) {
+$("#plusBtn").click(function (e) {
 	$("#file").click();
 });
 
@@ -82,7 +82,7 @@ function modifyFileListDiv() {
 /*
  * '파일삭제' 버튼을 누르면 현재 업로드 파일 목록에서 체크된 파일을 삭제한다.
  */
-$("#minusBtn").on("click", function (e) {
+$("#minusBtn").click(function (e) {
 	var checkedList = $("#fileListDiv :checked");
 	for (item of checkedList) {
 		// 파일이 체크된 상태일 때
@@ -119,7 +119,7 @@ $("#boardCreateForm").submit(function (e) {
 /* 
  * boardDetail.jsp의 modify 버튼을 클릭했을 때 수정 모드로 전환한다.
  */
-$("#modifyBtn").on("click", function (e) {
+$("#modifyBtn").click(function (e) {
 	handleModifyBtn();
 });
 
@@ -127,7 +127,7 @@ var isDisabled = true; // modify 버튼 초기 상태: 비활성화
 
 function handleModifyBtn() {
 	var title = $("#title");
-	var contents = $("#contents");
+	var contents = $("#summernote");
 	var fileUploadDiv = $("#fileUploadDiv");
 	var uploadBtn = $("#uploadBtn");
 	var deleteBtn = $("#deleteBtn");
@@ -135,7 +135,7 @@ function handleModifyBtn() {
 	if (!isDisabled) {
 		// modify 버튼이 활성화 되어 있을 때
 		title.prop('disabled', true);
-		contents.prop('disabled', true);
+		contents.summernote('disable');
 		fileUploadDiv.css({
 			'display': 'none'
 		});
@@ -146,7 +146,7 @@ function handleModifyBtn() {
 	} else {
 		// modify 버튼이 비활성화 되어 있을 때
 		title.prop('disabled', false);
-		contents.prop('disabled', false);
+		contents.summernote('enable');
 		fileUploadDiv.css({
 			'display': ''
 		});
@@ -157,8 +157,6 @@ function handleModifyBtn() {
 	}
 	isDisabled = !isDisabled;
 }
-
-
 
 /*
  * boardDetail.jsp의 formData(multipart/form-data)를 받아 지정된 url에 ajax를 호출한다.
@@ -188,7 +186,7 @@ $("#boardDetailform").submit(function (e) {
 /*
  * BoardDetail.jsp 에서 파일 이름을 클릭했을 때 POST 방식으로 다운로드 하도록 이벤트를 처리한다.
  */
-$(".fileDownload").on("click", function (e) {
+$(".fileDownload").click(function (e) {
 	e.preventDefault();
 	var uuid = $(this).attr("href");
 	var form = $('<form>').attr({
@@ -206,7 +204,7 @@ $(".fileDownload").on("click", function (e) {
 /* 
  * BoardDetail.jsp 에서 'delete'버튼을 클릭하면 게시글 삭제 이벤트를 수행한다.
  */
-$("#deleteBtn").on("click", function (e) {
+$("#deleteBtn").click(function (e) {
 	$.ajax({
 		url: '/myapp/board/delete',
 		type: 'POST',
@@ -222,3 +220,14 @@ $("#deleteBtn").on("click", function (e) {
 		}
 	});
 });
+
+$('#summernote').summernote({
+	  toolbar: [
+	    ['style', ['bold', 'italic', 'underline', 'clear']],
+	    ['font', ['strikethrough', 'superscript', 'subscript']],
+	    ['fontsize', ['fontsize']],
+	    ['color', ['color']],
+	    ['para', ['ul', 'ol', 'paragraph']],
+	    ['height', ['height']]
+	  ]
+	});
