@@ -58,7 +58,9 @@ public class BoardController {
      */
     @PostMapping(value="/search", produces="text/plain;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> hasSearchResult(SearchInfoDTO searchInfo){
-	if(service.hasSearchResult(searchInfo)) {
+	if("".equals(searchInfo.getSearch())) {
+	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("내용을 입력하세요.");
+	} else if(service.hasSearchResult(searchInfo)) {
 	    // 조회 결과가 존재할 때
 	    return ResponseEntity.status(HttpStatus.OK).build();
 	}

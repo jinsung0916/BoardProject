@@ -13,9 +13,7 @@ $("#searchBtn").on("click", function (e) {
 			$("#searchForm").submit();
 		},
 		error: function (xhr) {
-			if (xhr.status == 404) {
-				alert(xhr.responseText);
-			}
+			alert(xhr.responseText);
 		}
 	});
 });
