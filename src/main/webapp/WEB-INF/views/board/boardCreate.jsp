@@ -8,12 +8,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>boardCreate</title>
-	<link rel="stylesheet" type="text/css" href="/myapp/resources/css/style.css">
-	<script src="/myapp/resources/js/jquery-3.3.1.min.js"></script>
+	
+	<!-- include libraries(jQuery, bootstrap) -->
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script> 
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script> 
+	
+	<!-- include summernote css/js -->
+	<link href="/myapp/resources/summernote/summernote.css" rel="stylesheet">
+	<script src="/myapp/resources/summernote/summernote.js"></script>
 </head>
 
 <body>
-	<form id="boardCreateForm" method="POST" enctype="multipart/form-data" style="width: 700px;">
+	<form id="boardCreateForm" method="POST" enctype="multipart/form-data" style="width: 750px;">
 		<fieldset>
 			<div class="formGroup">
 				<label>제목: </label>
@@ -21,8 +28,7 @@
 			</div>
 
 			<div class="formGroup">
-				<label>내용: </label>
-				<textarea name="contents"></textarea>
+				<textarea id="summernote" name="contents"></textarea>
 			</div>
 
 			<div style="display: none;">
@@ -48,6 +54,9 @@
 	</form>
 
 	<script src="/myapp/resources/js/script.js"></script>
+	<script type="text/javascript">
+		$('#summernote').summernote('enable');
+	</script>
 </body>
 
 </html>

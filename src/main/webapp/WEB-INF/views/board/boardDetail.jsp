@@ -10,12 +10,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>BoardDetail</title>
-	<link rel="stylesheet" type="text/css" href="/myapp/resources/css/style.css">
-	<script src="/myapp/resources/js/jquery-3.3.1.min.js"></script>
+	
+	<!-- include libraries(jQuery, bootstrap) -->
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script> 
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script> 
+	
+	<!-- include summernote css/js -->
+	<link href="/myapp/resources/summernote/summernote.css" rel="stylesheet">
+	<script src="/myapp/resources/summernote/summernote.js"></script>
 </head>
 
 <body>
-	<form id="boardDetailform" method="POST" enctype="multipart/form-data" style="width: 700px;">
+	<form id="boardDetailform" method="POST" enctype="multipart/form-data" style="width: 750px;">
 		<fieldset>
 			<div class="hiddenFormGroup">
 				<input id="no" type="hidden" name="no" value="${board.no}" />
@@ -25,19 +32,17 @@
 				<label for="title">제목: </label>
 				<input id="title" type="text" name="title" value="${board.title}" disabled />
 			</div>
-
+			
 			<div class="formGroup">
-				<label for="contents">내용: </label>
-				<textarea id="contents" name="contents" disabled>${board.contents}</textarea>
+				<textarea id="summernote" name="contents">${board.contents}</textarea>
 			</div>
-
 
 			<!-- 첨부파일 다운로드 -->
 			<div style="height: 150px;">
 				<div>첨부파일</div>
 				<div style="border: solid 1px; height: 80%; overflow: auto">
 					<c:forEach var="file" items="${board.fileList}">
-						<div class="hoverDiv"><a class="fileDownload" href="${file.uuid}">${file.fileName}</a></div>
+						<div><a class="fileDownload" href="${file.uuid}">${file.fileName}</a></div>
 					</c:forEach>
 				</div>
 			</div>
@@ -82,6 +87,9 @@
 	</form>
 
 	<script src="/myapp/resources/js/script.js"></script>
+	<script type="text/javascript">
+		$('#summernote').summernote('disable');
+	</script>
 </body>
 
 </html>
