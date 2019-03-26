@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-			</pattern>
-		</encoder>
+<configuration scan="true">
+	
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	        <fileNamePattern>D:\\logs\\boardProject\\log-%d{yyyy-MM-dd}.log</fileNamePattern>
+	        <maxHistory>30</maxHistory> 
+	        <totalSizeCap>3GB</totalSizeCap>
+	    </rollingPolicy>
+	    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+	        <maxFileSize>3MB</maxFileSize>
+	    </triggeringPolicy>
+	    <encoder>
+	        <pattern>%d{HH:mm:ss.SSS} %-5level %logger[%method:%line] - %msg%n</pattern>
+	    </encoder>
 	</appender>
 
-	<logger name="ch.qos.logback" level="WARN" />
-	<logger name="org.mortbay.log" level="WARN" />
-	<logger name="org.springframework" level="INFO" />
-	<logger name="org.springframework.beans" level="WARN" />
-	<logger name="org.ibatis" level="INFO" />
-    <logger name="github.priyatam.springrest" level="DEBUG" />
-    <logger name="com.joins.myapp.persistence" level="DEBUG" />
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+	 	<encoder> 
+			<pattern>%d{HH:mm:ss.SSS} %-5level %logger[%method:%line] - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	 
+	<logger name="com.joins.myapp.persistence">
+        <level value="DEBUG"/>
+    </logger>
     
 	<root level="INFO">
-		<appender-ref ref="STDOUT" />
+	 	<appender-ref ref="FILE" />
+	 	<appender-ref ref="STDOUT" />
 	</root>
+
 </configuration>
 
