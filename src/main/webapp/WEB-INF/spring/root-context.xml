@@ -17,41 +17,11 @@
   	<util:properties id="pagination" location="classpath:properties/pagination.properties" />
   	
 	<!-- datasource 설정 -->	
-	<bean id="actualDataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="#{jdbc['driverClassName']}"/>
 		<property name="url" value="#{jdbc['url']}" />
 		<property name="username" value="#{jdbc['username']}" />
 		<property name="password" value="#{jdbc['password']}" />
-	</bean>
-	
-	<!-- datasource proxy 설정 -->
-	<bean id="dataSource" primary="true" class="net.ttddyy.dsproxy.support.ProxyDataSource">
-		  <property name="dataSource" ref="actualDataSource"/>
-		  <property name="proxyConfig" ref="proxyConfig"/>
-	</bean>
-	<bean id="proxyConfig"
-	      factory-bean="proxyConfigSupport"
-	      factory-method="create"/>
-	<bean id="proxyConfigSupport" class="net.ttddyy.dsproxy.support.ProxyConfigSpringXmlSupport">
-	  <property name="dataSourceName" value="my-ds"/>
-	  <property name="queryListener" ref="queryListener"/>
-	  <property name="methodListener" ref="methodListener"/>
-	</bean>
-	<bean id="queryListener" class="net.ttddyy.dsproxy.listener.ChainListener">
-	  <property name="listeners">
-	    <list>
-	      <bean class="net.ttddyy.dsproxy.listener.logging.SystemOutQueryLoggingListener"/>
-	    </list>
-	  </property>
-	</bean>
-	<bean id="methodListener" class="net.ttddyy.dsproxy.listener.CompositeMethodListener">
-	  <property name="listeners">
-	    <list>
-	      <bean class="net.ttddyy.dsproxy.listener.TracingMethodListener"/>
-	    </list>
-	  </property>
 	</bean>
 	
 	<!-- Mybatis 설정 -->

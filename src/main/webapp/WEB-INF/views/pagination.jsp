@@ -12,7 +12,7 @@
 	<a class="moveToOtherPage" href="${pageObj.endPage+1}">&gt&gt</a>
 </c:if>
 
-<form id="moveToOtherPageForm" method="POST" action='/myapp/board/list' style="display:none">
+<form id="moveToOtherPageForm" method="POST" action='/myapp/board/list'>
 	<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
 	<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
 	<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
