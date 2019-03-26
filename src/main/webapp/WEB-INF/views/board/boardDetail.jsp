@@ -11,14 +11,12 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>BoardDetail</title>
 	
-	<!-- include libraries(jQuery, bootstrap) -->
-	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script> 
-	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script> 
+	<!-- include libraries(jQuery) -->
+	<script src="/myapp/resources/js/jquery-3.3.1.min.js"></script> 
 	
 	<!-- include summernote css/js -->
-	<link href="/myapp/resources/summernote/summernote.css" rel="stylesheet">
-	<script src="/myapp/resources/summernote/summernote.js"></script>
+	<link href="/myapp/resources/summernote/summernote-lite.css" rel="stylesheet">
+	<script src="/myapp/resources/summernote/summernote-lite.min.js"></script>
 </head>
 
 <body>

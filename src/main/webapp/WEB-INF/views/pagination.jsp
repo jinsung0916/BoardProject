@@ -6,7 +6,14 @@
 	<a class="moveToOtherPage" href="${pageObj.startPage-1}">&lt&lt</a>
 </c:if>
 <c:forEach var="num" begin="${pageObj.startPage}" end="${pageObj.endPage}">
-	<a class="moveToOtherPage" href="${num}">${num}</a>
+	<c:choose>
+		<c:when test="${pageObj.searchInfo.page == num}">
+			<span>${num}</span>
+		</c:when>
+		<c:otherwise>
+			<a class="moveToOtherPage" href="${num}">${num}</a>
+		</c:otherwise>
+	</c:choose>
 </c:forEach>
 <c:if test="${pageObj.next}">
 	<a class="moveToOtherPage" href="${pageObj.endPage+1}">&gt&gt</a>
