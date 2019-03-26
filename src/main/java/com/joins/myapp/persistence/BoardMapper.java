@@ -8,7 +8,7 @@ import com.joins.myapp.domain.SearchInfoDTO;
 public interface BoardMapper {
     int countAll(SearchInfoDTO searchInfo);
 
-    BoardDTO findByNo(long id);
+    BoardDTO findByNo(long no);
 
     List<BoardDTO> findPagenated(SearchInfoDTO searchInfo);
     
