@@ -10,6 +10,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -124,6 +125,7 @@ public class BoardController {
      * 4. 출력 Data: 
      */
     @GetMapping("/create")
+    @PreAuthorize("isAuthenticated()")
     public String boardCreate() {
 	return "board/boardCreate";
     }

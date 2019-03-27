@@ -22,3 +22,26 @@ CREATE TABLE `file` (
 COLLATE='utf8_bin'
 ENGINE=InnoDB
 ;
+
+CREATE TABLE `tbl_member` (
+	`userid` VARCHAR(50) NOT NULL COLLATE 'utf8_bin',
+	`userpw` VARCHAR(100) NOT NULL COLLATE 'utf8_bin',
+	`username` VARCHAR(100) NOT NULL COLLATE 'utf8_bin',
+	`regdate` DATE NULL DEFAULT NULL,
+	`updatedate` DATE NULL DEFAULT NULL,
+	`enabled` CHAR(50) NOT NULL DEFAULT '1' COLLATE 'utf8_bin',
+	PRIMARY KEY (`userid`)
+)
+COLLATE='utf8_bin'
+ENGINE=InnoDB
+;
+
+CREATE TABLE `tbl_member_auth` (
+	`userid` VARCHAR(50) NOT NULL COLLATE 'utf8_bin',
+	`auth` VARCHAR(50) NOT NULL COLLATE 'utf8_bin',
+	INDEX `fk_member_auth` (`userid`),
+	CONSTRAINT `fk_member_auth` FOREIGN KEY (`userid`) REFERENCES `tbl_member` (`userid`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='utf8_bin'
+ENGINE=InnoDB
+;
