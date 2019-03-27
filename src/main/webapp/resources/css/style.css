@@ -1,0 +1,45 @@
+/* Customization to limit height of the menu */
+.custom-restricted {
+    box-sizing: border-box;
+    height: 160px;
+    border: 1px solid gray;
+    border-radius: 4px;
+    overflow: auto;
+}
+
+.button-success,
+.button-error,
+.button-warning,
+.button-secondary {
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.button-success {
+    background: rgb(28, 184, 65); /* this is a green */
+}
+
+.button-error {
+    background: rgb(202, 60, 60); /* this is a maroon */
+}
+
+.button-warning {
+    background: rgb(223, 117, 20); /* this is an orange */
+}
+
+.button-secondary {
+    background: black; /* this is a light blue */
+}
+
+a {
+    text-decoration: none;
+}
+
+.home-menu {
+    background: black;
+}
+
+.home-menu .pure-menu-item a {
+    color: white;
+}

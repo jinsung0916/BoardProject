@@ -9,67 +9,83 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>boardList</title>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script> 
+
+	<!-- include pure.css -->
+	<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" 
+		integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" 
+		crossorigin="anonymous">
+		
+	<!-- include libraries(jQuery) -->
+	<script src="/myapp/resources/js/jquery-3.3.1.min.js"></script>
+
+	<!-- include custom css-->
+	<link rel="stylesheet" href="/myapp/resources/css/style.css">
 </head>
 
 <body>
-	<div align="center" style="width:70%">
-		<div>
-			<div align="left">
-				<form id="searchForm" method="POST" action="/myapp/board/list">
-					<input type="date" name="startDate" value="${pageObj.searchInfo.startDate}" />~
-					<input type="date" name="endDate" value="${pageObj.searchInfo.endDate}" />
-					<input type="search" name="search" value="${pageObj.searchInfo.search}">
-					<c:choose>
-						<c:when test="${pageObj.searchInfo.choose == 'contents'}">
-							<input type="radio" name="choose" value="title">제목
-							<input type="radio" name="choose" value="contents" checked>내용
-						</c:when>
-						<c:otherwise>
-							<input type="radio" name="choose" value="title" checked>제목
-							<input type="radio" name="choose" value="contents">내용
-						</c:otherwise>
-					</c:choose>
-					<button id="searchBtn" type="button">검색</button>
-				</form>
-			</div>
-			<div align="right">
-				<a href="/myapp/board/create"><button>작성하기</button></a>
-			</div>
+	<jsp:include page="../header.jsp"></jsp:include>
+
+	<div class="pure-g">
+		<div class="pure-u-1-1">
+			<form id="searchForm" method="POST" action="/myapp/board/list" class="pure-form">
+				<input type="date" name="startDate" value="${pageObj.searchInfo.startDate}" />~
+				<input type="date" name="endDate" value="${pageObj.searchInfo.endDate}" />
+				<input type="search" name="search" value="${pageObj.searchInfo.search}">
+				<c:choose>
+					<c:when test="${pageObj.searchInfo.choose == 'contents'}">
+						<input type="radio" name="choose" value="title">제목
+						<input type="radio" name="choose" value="contents" checked>내용
+					</c:when>
+					<c:otherwise>
+						<input type="radio" name="choose" value="title" checked>제목
+						<input type="radio" name="choose" value="contents">내용
+					</c:otherwise>
+				</c:choose>
+				<button id="searchBtn" type="button" class="pure-button">검색</button>
+			</form>
 		</div>
 
-		<table border="1" style="width:100%">
-			<tr>
-				<th>번호</th>
-				<th>제목</th>
-				<th>일자</th>
-			</tr>
-
-			<c:forEach var="board" items="${pageObj.contents}">
+		<div class="pure-u-1-1">
+			<div align="right">
+				<a href="/myapp/board/create"><button type="button" class="pure-button">작성하기</button></a>
+			</div>
+			<table width="100%" class="pure-table pure-table-bordered">
 				<tr>
-					<td>
-						<c:out value="${board.no}" />
-					</td>
-					<td><a class="moveToBoardDetail" href="${board.no}" target="_blank">
-							<c:out value="${board.title}" /></a></td>
-					<td>
-						<c:out value="${board.regDate}" />
-					</td>
+					<th>번호</th>
+					<th>제목</th>
+					<th>일자</th>
 				</tr>
-			</c:forEach>
-		</table>
 
+				<c:forEach var="board" items="${pageObj.contents}">
+					<tr>
+						<td>
+							<c:out value="${board.no}" />
+						</td>
+						<td><a class="moveToBoardDetail" href="${board.no}" target="_blank">
+								<c:out value="${board.title}" /></a></td>
+						<td>
+							<c:out value="${board.regDate}" />
+						</td>
+					</tr>
+				</c:forEach>
+			</table>
+		</div>
+		
 		<jsp:include page="../pagination.jsp"></jsp:include>
+		
 	</div>
 
-	<form id="moveToBoardDetailForm" method="POST" action='/myapp/board/detail'>
-		<input type='hidden' name='page' value="${pageObj.searchInfo.page}">
-		<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
-		<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
-		<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
-		<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
-	</form>
+	<div>
+		<form id="moveToBoardDetailForm" method="POST" action='/myapp/board/detail'>
+			<input type='hidden' name='page' value="${pageObj.searchInfo.page}">
+			<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
+			<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
+			<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
+			<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
+		</form>
+	</div>
 
+	<!-- include custom js-->
 	<script src="/myapp/resources/js/script.js"></script>
 </body>
 

@@ -75,7 +75,18 @@ function modifyFileListDiv() {
 	for (var item of currentListOfFile) {
 		// 현재 업로드 파일 목록를 순회한다.
 		var fileName = item.name;
-		$("#fileListDiv").append("<input type='checkbox' value='" + fileName + "'/>" + fileName + "<br/>");
+		var label = $("<label>").attr({
+			for: fileName,
+		}).addClass("pure-checkbox");
+		
+		var checkboxInput = $("<input>").attr({
+			id: fileName,
+			value: fileName,
+			type: "checkbox",
+		}).appendTo(label);
+
+		label.append(fileName);	
+		$("#fileListDiv").append(label);
 	}
 }
 
@@ -86,7 +97,15 @@ $("#minusBtn").click(function (e) {
 	var checkedList = $("#fileListDiv :checked");
 	for (item of checkedList) {
 		// 파일이 체크된 상태일 때
-		currentListOfFile.splice($.inArray(item.value, currentListOfFile), 1);
+		var idx = -1;
+		for(var i=0; i<currentListOfFile.length; i++){
+			// 현재 업로드 파일 목록을 순회하며 파일 이름이 같은 객체를 찾는다.
+			if(currentListOfFile[i].name == item.value){
+				idx = i;
+				break;	
+			}
+		}
+		currentListOfFile.splice(idx, 1);
 	}
 	modifyFileListDiv();
 });
@@ -136,24 +155,16 @@ function handleModifyBtn() {
 		// modify 버튼이 활성화 되어 있을 때
 		title.prop('disabled', true);
 		contents.summernote('disable');
-		fileUploadDiv.css({
-			'display': 'none'
-		});
-		uploadBtn.prop('type', 'hidden');
-		deleteBtn.css({
-			'display': 'none'
-		});
+		fileUploadDiv.hide()
+		uploadBtn.hide();
+		deleteBtn.hide();
 	} else {
 		// modify 버튼이 비활성화 되어 있을 때
 		title.prop('disabled', false);
 		contents.summernote('enable');
-		fileUploadDiv.css({
-			'display': ''
-		});
-		uploadBtn.prop('type', 'submit');
-		deleteBtn.css({
-			'display': ''
-		});
+		fileUploadDiv.show();
+		uploadBtn.show();
+		deleteBtn.show();
 	}
 	isDisabled = !isDisabled;
 }

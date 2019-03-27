@@ -15,42 +15,55 @@
 	<!-- include summernote css/js -->
 	<link href="/myapp/resources/summernote/summernote-lite.css" rel="stylesheet">
 	<script src="/myapp/resources/summernote/summernote-lite.min.js"></script>
+
+	<!-- include pure.css -->
+	<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" 
+		integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" 
+		crossorigin="anonymous">
+
+	<!-- include custom css-->
+	<link rel="stylesheet" href="/myapp/resources/css/style.css">
+
 </head>
 
 <body>
-	<form id="boardCreateForm" method="POST" enctype="multipart/form-data" style="width: 750px;">
-		<fieldset>
-			<div class="formGroup">
-				<label>제목: </label>
-				<input type="text" name="title" />
-			</div>
+	<jsp:include page="../header.jsp"></jsp:include>
 
-			<div class="formGroup">
-				<textarea id="summernote" name="contents"></textarea>
-			</div>
+	<div class="pure-g">
+		<div class="pure-u-1-1">
+			<form id="boardCreateForm" method="POST" enctype="multipart/form-data" class="pure-form pure-form-stacked">
+				<fieldset>
+		
+					<label for="title">제목</label>
+					<input id="title" type="text" name="title" value="${board.title}" />
 
-			<div style="display: none;">
-				<input id="file" type="file" name="uploadFile" multiple />
-			</div>
+					<label for="summernote">내용</label>
+					<textarea id="summernote" name="contents">${board.contents}</textarea>
 
-			<div id="fileUploadDiv" style="height: 150px;">
-				<div>업로드할 파일</div>
-				<div style="height: 80%;">
-					<div id="fileListDiv"
-						style="border: solid 1px; float: left; width: 85%; height:100%; overflow: auto">
+					<!-- 파일 업로드 폼-->
+					<input id="file" type="file" name="uploadFile" multiple hidden />
+
+					<div id="fileUploadDiv">
+						<div>업로드할 파일</div>
+						<div class="pure-g">
+							<div id="fileListDiv" class="pure-u-4-5 custom-restricted">
+							</div>
+							<div align="center" class="pure-g pure-u-1-5">
+								<button id="plusBtn" type="button" class="pure-button">파일추가</button><br/>
+								<button id="minusBtn" type="button" class="pure-button">파일삭제</button>
+							</div>
+						</div>
 					</div>
-					<div style="float: right; width:14%;" align="center">
-						<button id="plusBtn" type="button">파일추가</button><br />
-						<button id="minusBtn" type="button">파일삭제</button><br />
-					</div>
-				</div>
-			</div>
 
-			<!-- 전송버튼 -->
-			<input type="submit" value="submit">
-		</fieldset>
-	</form>
+					<!-- 전송버튼 -->
+					<button id="uploadBtn" type="submit" class="pure-button pure-button-primary">submit</button>
 
+				</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<!-- include custom js-->
 	<script src="/myapp/resources/js/script.js"></script>
 	<script type="text/javascript">
 		$('#summernote').summernote('enable');
