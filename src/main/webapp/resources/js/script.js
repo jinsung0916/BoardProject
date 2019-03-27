@@ -97,7 +97,7 @@ $("#minusBtn").click(function (e) {
 $("#boardCreateForm").submit(function (e) {
 	e.preventDefault();
 	var newFileList = new FileList(currentListOfFile);
-	currentListOfFile = []; // #file 의 change 이벤트에 영향을 미치지 않도록 현재 업로드 파일 목록을 비운다.
+	$("#file").off();
 	$("#file")[0].files = newFileList;
 	var formData = new FormData($("#boardCreateForm")[0]);
 	$.ajax({
@@ -164,7 +164,7 @@ function handleModifyBtn() {
 $("#boardDetailform").submit(function (e) {
 	e.preventDefault();
 	var newFileList = new FileList(currentListOfFile);
-	currentListOfFile = []; // #file 의 change 이벤트에 영향을 미치지 않도록 현재 업로드 파일 목록을 비운다.
+	$("#file").off();
 	$("#file")[0].files = newFileList;
 	var formData = new FormData($("#boardDetailform")[0]);
 	$.ajax({
@@ -222,12 +222,12 @@ $("#deleteBtn").click(function (e) {
 });
 
 $('#summernote').summernote({
-	  toolbar: [
-	    ['style', ['bold', 'italic', 'underline', 'clear']],
-	    ['font', ['strikethrough', 'superscript', 'subscript']],
-	    ['fontsize', ['fontsize']],
-	    ['color', ['color']],
-	    ['para', ['ul', 'ol', 'paragraph']],
-	    ['height', ['height']]
-	  ]
-	});
+	toolbar: [
+		['style', ['bold', 'italic', 'underline', 'clear']],
+		['font', ['strikethrough', 'superscript', 'subscript']],
+		['fontsize', ['fontsize']],
+		['color', ['color']],
+		['para', ['ul', 'ol', 'paragraph']],
+		['height', ['height']]
+	]
+});
