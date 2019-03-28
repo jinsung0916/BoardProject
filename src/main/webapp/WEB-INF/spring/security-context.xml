@@ -7,15 +7,16 @@
 
 	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
 	<bean id="customUserDetailService" class="com.joins.myapp.security.CustomUserDetailService"></bean>
-	<bean id="myAuthenticationSuccessHandler" class="com.joins.myapp.security.MySimpleUrlAuthenticationSuccessHandler" />
+	<bean id="simpleUrlAuthenticationSuccessHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+		<property name="useReferer" value="true"></property>
+	</bean>
 	
 	<security:http use-expressions="true">	
-		<security:form-login login-page='/customLogin'
-      		authentication-failure-url="/customLogin?error=true"
-      		authentication-success-handler-ref="myAuthenticationSuccessHandler"/>
-		<security:logout logout-url="/customLogout" invalidate-session="true"/>
+	
+		<security:form-login login-page='/customLogin' default-target-url="/board/list" />
+      		
+		<security:logout logout-success-url="/board/list" invalidate-session="true"/>
 		
-		<security:csrf disabled="true"/>
 	</security:http>
 	
 	<security:authentication-manager>

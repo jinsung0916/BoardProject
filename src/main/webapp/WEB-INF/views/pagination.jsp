@@ -28,6 +28,7 @@
 			<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
 			<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
 			<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
+			<input type='hidden' name='${_csrf.parameterName}' value="${_csrf.token}">
 		</form>
 	</div>
 </div>

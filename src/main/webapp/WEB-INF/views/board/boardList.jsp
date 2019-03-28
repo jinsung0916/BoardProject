@@ -51,6 +51,7 @@
 				<tr>
 					<th>번호</th>
 					<th>제목</th>
+					<th>작성자</th>
 					<th>일자</th>
 				</tr>
 
@@ -59,8 +60,12 @@
 						<td>
 							<c:out value="${board.no}" />
 						</td>
-						<td><a class="moveToBoardDetail" href="${board.no}" target="_blank">
-								<c:out value="${board.title}" /></a></td>
+						<td>
+							<a class="moveToBoardDetail" href="${board.no}" target="_blank"><c:out value="${board.title}" /></a>
+						</td>
+						<td>
+							<c:out value="${board.userId}" />
+						</td>
 						<td>
 							<c:out value="${board.regDate}" />
 						</td>
@@ -80,11 +85,49 @@
 			<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
 			<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
 			<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
+			<input type='hidden' name='${_csrf.parameterName}' value="${_csrf.token}">
 		</form>
 	</div>
 
-	<!-- include custom js-->
-	<script src="/myapp/resources/js/script.js"></script>
+	<script type="text/javascript">
+		/*
+		 * 검색버튼을 클릭했을 때 AJAX요청을 수행한다.
+		 */
+		$("#searchBtn").click(function (e) {
+			var formData = new FormData($("#searchForm")[0]);
+			$.ajax({
+				url: '/myapp/board/search',
+				type: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false,
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}")
+				},
+				success: function () {
+					$("#searchForm").submit();
+				},
+				error: function (xhr) {
+					alert(xhr.responseText);
+				}
+			});
+		});
+
+		/*
+		 * 게시글 링크를 클릭했을 때 POST 요청이 이루어지도록 이벤트를 처리한다.
+		 */
+		$(".moveToBoardDetail").click(function (e) {
+			e.preventDefault();
+			var no = $(this).attr("href");
+			$('<input>').attr({
+				type: 'hidden',
+				name: 'no',
+				value: no
+			}).appendTo('#moveToBoardDetailForm');
+			$("#moveToBoardDetailForm").submit();
+		});
+
+	</script>
 </body>
 
 </html>

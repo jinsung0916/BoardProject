@@ -3,7 +3,6 @@ package com.joins.myapp.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,14 +25,9 @@ public class SecurityController {
 	return "auth/login";
     }
 
-    @GetMapping("/customLogout")
-    public String logoutGET() {
-	log.info("custom logout get");
+    @GetMapping("/logout")
+    public String logout() {
 	return "auth/logout";
     }
 
-    @PostMapping("/customLogout")
-    public void logoutPOST() {
-	log.info("custom logout post");
-    }
 }

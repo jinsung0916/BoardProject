@@ -18,6 +18,7 @@ public class BoardDTO {
     private String title;
     private String Contents;
     private Date regDate;
+    private String userId;
 
     private List<FileDTO> fileList;
 }
