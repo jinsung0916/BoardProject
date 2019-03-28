@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.joins.myapp.domain.CustomUser;
 import com.joins.myapp.domain.MemberDTO;
 import com.joins.myapp.persistence.MemberMapper;
 

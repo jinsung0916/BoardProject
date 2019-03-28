@@ -1,9 +1,11 @@
-package com.joins.myapp.domain;
+package com.joins.myapp.security;
 
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+
+import com.joins.myapp.domain.MemberDTO;
 
 import lombok.Getter;
 
