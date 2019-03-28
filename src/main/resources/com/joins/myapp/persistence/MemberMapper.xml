@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joins.myapp.persistence.MemberMapper">
+	<resultMap type="member" id="memberResultMap">
+		<id property="userid" column="userid"/>
+		<result property="userpw" column="userpw"/>
+		<result property="username" column="userpw"/>
+		<result property="regDate" column="regdate"/>
+		<result property="updateDate" column="updatedate"/>
+		<collection property="authList" ofType="auth">
+			<result property="userid" column="userid"/>
+			<result property="auth" column="auth"/>
+		</collection>
+	</resultMap>
+	
+	<select id="findByID" parameterType="String" resultMap="memberResultMap">
+		SELECT mem.userid userid, userpw, username, regdate, updatedate, enabled, auth
+		FROM tbl_member mem
+		LEFT OUTER JOIN tbl_member_auth auth ON mem.userid= auth.userid
+		WHERE mem.userid = #{userid};
+	</select>
+</mapper>

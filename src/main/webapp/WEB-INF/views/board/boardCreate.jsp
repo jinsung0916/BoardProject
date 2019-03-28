@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
 <!DOCTYPE html>
 <html>
 
@@ -31,7 +33,10 @@
 		<div class="pure-u-1-1">
 			<form id="boardCreateForm" method="POST" enctype="multipart/form-data" class="pure-form pure-form-stacked">
 				<fieldset>
-		
+				
+					<label for="">작성자</label>
+					<input id="writer" name="writer" value='<sec:authentication property="principal.username" />'  readonly>
+					
 					<label for="title">제목</label>
 					<input id="title" type="text" name="title" value="${board.title}" />
 
@@ -52,7 +57,9 @@
 							</div>
 						</div>
 					</div>
-
+					
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"> 
+					
 					<!-- 전송버튼 -->
 					<button id="uploadBtn" type="submit" class="pure-button pure-button-primary">submit</button>
 

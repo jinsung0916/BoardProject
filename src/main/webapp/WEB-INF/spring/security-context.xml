@@ -5,15 +5,17 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="customAccessDenied" class="com.joins.myapp.security.CustomAccessDeniedHandler"></bean>
 	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
 	<bean id="customUserDetailService" class="com.joins.myapp.security.CustomUserDetailService"></bean>
+	<bean id="myAuthenticationSuccessHandler" class="com.joins.myapp.security.MySimpleUrlAuthenticationSuccessHandler" />
 	
 	<security:http use-expressions="true">	
-		<security:form-login login-page="/customLogin" />
+		<security:form-login login-page='/customLogin'
+      		authentication-failure-url="/customLogin?error=true"
+      		authentication-success-handler-ref="myAuthenticationSuccessHandler"/>
 		<security:logout logout-url="/customLogout" invalidate-session="true"/>
 		
-		<security:access-denied-handler ref="customAccessDenied"/>
+		<security:csrf disabled="true"/>
 	</security:http>
 	
 	<security:authentication-manager>

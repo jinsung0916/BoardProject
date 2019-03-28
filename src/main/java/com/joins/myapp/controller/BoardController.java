@@ -137,6 +137,7 @@ public class BoardController {
      * 4. 출력 Data: 응답 헤더와 상태메시지
      */
     @PostMapping(value="/create", produces="text/plain;charset=UTF-8")
+    @PreAuthorize("isAuthenticated()")
     public @ResponseBody ResponseEntity<String> boardCreate(BoardDTO board, MultipartFile[] uploadFile) {
 	if("".equals(board.getTitle())) {
 	    // 게시글 제목이 존재하지 않을 경우 400을 반환한다.
@@ -168,6 +169,7 @@ public class BoardController {
      * 4. 출력 Data: 응답 헤더와 상태메시지
      */
     @PostMapping(value="/update", produces="text/plain;charset=UTF-8")
+    @PreAuthorize("isAuthenticated()")
     public @ResponseBody ResponseEntity<String> boardUpdate(BoardDTO board, MultipartFile[] uploadFile) {
 	if("".equals(board.getTitle())) {
 	    // 게시글 제목이 존재하지 않을 경우 400을 반환한다.
@@ -199,6 +201,7 @@ public class BoardController {
      * 4. 출력 Data: 응답 헤더와 상태메시지
      */
     @PostMapping("/delete")
+    @PreAuthorize("isAuthenticated()")
     public @ResponseBody ResponseEntity<String> deleteBoard(long no) {
 	BoardDTO board = service.findOne(no);
 	if(board == null) {
