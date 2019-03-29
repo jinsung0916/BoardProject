@@ -4,19 +4,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	<h1>Custom Login Page</h1>
-	<h2><c:out value="${error}"></c:out></h2>
-	<h2><c:out value="${logout}"></c:out></h2>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
 
-	<form method="POST" action="login">
-		<input type="text" name="username" value="admin">
-		<input type="text" name="password" value="admin">
-		<input type="submit">
-		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"> 
-	</form>
+	<!-- include pure.css -->
+	<link rel="stylesheet" href="/myapp/resources/css/pure-min.css">
+		
+	<!-- include libraries(jQuery) -->
+	<script src="/myapp/resources/js/jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+	<div align="center">
+		<h2><c:out value="${error}"></c:out></h2>
+		<h2><c:out value="${logout}"></c:out></h2>
+		
+		<form method="POST" action="login" class="pure-form pure-form-stacked">
+			<fieldset>
+				<input type="text" name="username" value="admin">
+				<input type="password" name="password" value="admin">
+				<button type="submit" class="pure-button button-success">Login</button>
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"> 
+			</fieldset>
+		</form>
+	</div>
 </body>
 </html>
