@@ -16,13 +16,18 @@
 
 <body>
 	<div align="center">
+		<h1>Login</h1>
 		<h2><c:out value="${error}"></c:out></h2>
 		<h2><c:out value="${logout}"></c:out></h2>
 		
 		<form method="POST" action="login" class="pure-form pure-form-stacked">
 			<fieldset>
-				<input type="text" name="username" value="admin">
-				<input type="password" name="password" value="admin">
+				<label for="username">ID</label>
+					<input id="username" type="text" name="username" value="admin">
+				
+				<label for="password">Password</label>
+					<input id="password" type="password" name="password" value="admin">
+				
 				<button type="submit" class="pure-button button-success">Login</button>
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"> 
 			</fieldset>
