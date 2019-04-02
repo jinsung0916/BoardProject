@@ -5,13 +5,9 @@ import java.util.List;
 
 import org.apache.ibatis.type.Alias;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Alias("board")
 public class BoardDTO {
     private long no;
