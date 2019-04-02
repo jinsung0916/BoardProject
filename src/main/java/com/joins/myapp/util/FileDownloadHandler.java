@@ -9,6 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class FileDownloadHandler {
+
+    private FileDownloadHandler() {
+	throw new UnsupportedOperationException();
+    }
+
     /**
      * 1. 개요: 
      * 2. 처리내용: 파일 리소스를 반환한다.
