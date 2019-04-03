@@ -59,7 +59,7 @@ public class BoardController {
      */
     @PostMapping(value = "/search", produces = "text/plain;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> hasSearchResult(SearchInfoDTO searchInfo) {
-	if ("".equals(searchInfo.getSearch())) {
+	if ("".equals(searchInfo.getValue())) {
 	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("내용을 입력하세요.");
 	} else if (service.hasSearchResult(searchInfo)) {
 	    // 조회 결과가 존재할 때
@@ -82,12 +82,8 @@ public class BoardController {
 	    // GET으로 접근 시 기본 페이지를 반환한다. 
 	    searchInfo.setPage(defaultPage);
 	}
-	if (searchInfo.getItemsPerPage() == 0) {
-	    // 페이지 크기에 대한 요청이 없으면 기본 페이지 크기를 할당한다.
-	    searchInfo.setItemsPerPage(defaultItemsPerPage);
-	}
 
-	PageDTO<BoardDTO> pageObj = service.findPaginated(defaultPagesPerOneLine, searchInfo);
+	PageDTO<BoardDTO> pageObj = service.findPaginated(defaultItemsPerPage, defaultPagesPerOneLine, searchInfo);
 	if (pageObj.getSearchInfo().getPage() > pageObj.getEndPage()) {
 	    // 잘못된 페이지를 요청했을 경우 예외를 발생시킨다.
 	    throw new HttpClientErrorException(HttpStatus.NOT_FOUND);

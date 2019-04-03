@@ -24,8 +24,8 @@
 
 	<div>
 		<form id="moveToOtherPageForm" method="POST" action='/myapp/board/list'>
-			<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
-			<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
+			<input type='hidden' name='flag' value="${pageObj.searchInfo.flag}">
+			<input type='hidden' name='value' value="${pageObj.searchInfo.value}">
 			<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
 			<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
 			<input type='hidden' name='${_csrf.parameterName}' value="${_csrf.token}">

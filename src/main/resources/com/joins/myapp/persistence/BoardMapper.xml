@@ -15,14 +15,14 @@
 			   		</if>
 				</trim>
 			</if>
-			<if test="search != null">
+			<if test="flag != null">
 				<trim prefix="AND">
 					<choose>	    	
-						<when test="choose == 'title'">
-			      			title LIKE CONCAT('%', #{search}, '%')
+						<when test="flag == 'title'">
+			      			title LIKE CONCAT('%', #{value}, '%')
 			      		</when>
-			      		<when test="choose == 'contents'">
-			      			contents LIKE CONCAT('%', #{search}, '%')
+			      		<when test="flag == 'contents'">
+			      			contents LIKE CONCAT('%', #{value}, '%')
 			      		</when> 
 					</choose>
 				</trim>
@@ -58,7 +58,7 @@
         where b.no = #{no}
     </select>
     	
-	<select id="findPagenated" parameterType="searchInfo" resultType="board">
+	<select id="findPagenated" resultType="board">
 		SELECT no, title, regDate, userId 
     	FROM board
 		<where>
@@ -72,21 +72,21 @@
 			   		</if>
 				</trim>
 			</if>
-			<if test="search != null">
+			<if test="flag != null">
 				<trim prefix="AND">
 					<choose>	    	
-						<when test="choose == 'title'">
-			      			title LIKE CONCAT('%', #{search}, '%')
+						<when test="flag == 'title'">
+			      			title LIKE CONCAT('%', #{value}, '%')
 			      		</when>
-			      		<when test="choose == 'contents'">
-			      			contents LIKE CONCAT('%', #{search}, '%')
+			      		<when test="flag== 'contents'">
+			      			contents LIKE CONCAT('%', #{value}, '%')
 			      		</when> 
 					</choose>
 				</trim>
 			</if>
 		</where>
 		ORDER BY no DESC 
-		LIMIT #{startIdx}, #{itemsPerPage}
+		LIMIT #{offset}, #{rowCount}
     </select>
 	
 	<insert id="insert" parameterType="board" useGeneratedKeys="true" keyProperty="no" keyColumn="NO">

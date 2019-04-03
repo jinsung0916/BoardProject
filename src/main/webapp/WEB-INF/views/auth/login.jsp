@@ -20,7 +20,7 @@
 		<h2><c:out value="${error}"></c:out></h2>
 		<h2><c:out value="${logout}"></c:out></h2>
 		
-		<form method="POST" action="login" class="pure-form pure-form-stacked">
+		<form method="post" action="login" class="pure-form pure-form-stacked">
 			<fieldset>
 				<label for="username">ID</label>
 					<input id="username" type="text" name="username" value="admin">

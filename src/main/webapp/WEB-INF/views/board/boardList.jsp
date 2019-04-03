@@ -26,19 +26,20 @@
 	<div class="pure-g">
 		<div class="pure-u-1-1">
 			<form id="searchForm" method="POST" action="/myapp/board/list" class="pure-form">
+				<input type='hidden' name= '${_csrf.parameterName}' value="${_csrf.token}">
 				<input type="date" name="startDate" value="${pageObj.searchInfo.startDate}" />~
 				<input type="date" name="endDate" value="${pageObj.searchInfo.endDate}" />
-				<input type="search" name="search" value="${pageObj.searchInfo.search}">
+				<input type="search" name="value" value="${pageObj.searchInfo.value}">
 				<c:choose>
-					<c:when test="${pageObj.searchInfo.choose == 'contents'}">
-						<input type="radio" name="choose" value="title">제목
-						<input type="radio" name="choose" value="contents" checked>내용
+					<c:when test="${pageObj.searchInfo.flag == 'contents'}">
+						<input type="radio" name="flag" value="title">제목
+						<input type="radio" name="flag" value="contents" checked>내용
 					</c:when>
 					<c:otherwise>
-						<input type="radio" name="choose" value="title" checked>제목
-						<input type="radio" name="choose" value="contents">내용
+						<input type="radio" name="flag" value="title" checked>제목
+						<input type="radio" name="flag" value="contents">내용
 					</c:otherwise>
-				</c:choose>
+				</c:choose>			
 				<button id="searchBtn" type="button" class="pure-button">검색</button>
 			</form>
 		</div>
@@ -81,11 +82,11 @@
 	<div>
 		<form id="moveToBoardDetailForm" method="POST" action='/myapp/board/detail'>
 			<input type='hidden' name='page' value="${pageObj.searchInfo.page}">
-			<input type='hidden' name='choose' value="${pageObj.searchInfo.choose}">
-			<input type='hidden' name='search' value="${pageObj.searchInfo.search}">
+			<input type='hidden' name='flag' value="${pageObj.searchInfo.flag}">
+			<input type='hidden' name='value' value="${pageObj.searchInfo.value}">
 			<input type='hidden' name='startDate' value="${pageObj.searchInfo.startDate}">
 			<input type='hidden' name='endDate' value="${pageObj.searchInfo.endDate}">
-			<input type='hidden' name='${_csrf.parameterName}' value="${_csrf.token}">
+			<input type='hidden' name= '${_csrf.parameterName}' value="${_csrf.token}">
 		</form>
 	</div>
 

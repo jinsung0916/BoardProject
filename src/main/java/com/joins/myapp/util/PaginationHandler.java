@@ -17,9 +17,9 @@ public class PaginationHandler {
      * 3. 입력 Data: 검색 요청 정보, 한 줄에 표시되는 페이지 갯수, 레코드의 갯수 
      * 4. 출력 Data: 페이징 처리 객체
      */
-    public static <T> PageDTO<T> generatePageDTO(List<T> contents, SearchInfoDTO searchInfo, int pagesPerOneLine,
-	    int totalSizeOfTable) {
-	int totalPages = (int) Math.ceil((totalSizeOfTable * 1.0) / searchInfo.getItemsPerPage());
+    public static <T> PageDTO<T> generatePageDTO(List<T> contents, SearchInfoDTO searchInfo, int itemsPerPage,
+	    int pagesPerOneLine, int totalSizeOfTable) {
+	int totalPages = (int) Math.ceil((totalSizeOfTable * 1.0) / itemsPerPage);
 	int endPage = (int) Math.ceil((searchInfo.getPage() * 1.0) / pagesPerOneLine) * pagesPerOneLine;
 	int startPage = endPage - pagesPerOneLine + 1;
 	boolean prev = startPage > 1;

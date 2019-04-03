@@ -10,7 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.joins.myapp.domain.BoardDTO;
-import com.joins.myapp.domain.SearchInfoDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,11 +43,7 @@ public class BoardMapperTest {
 
     @Test
     public void testFindPaginated() {
-	SearchInfoDTO searchInfo = new SearchInfoDTO();
-	searchInfo.setItemsPerPage(10);
-	searchInfo.setStartIdx(0);
-
-	List<BoardDTO> list = boardMapper.findPagenated(searchInfo);
+	List<BoardDTO> list = boardMapper.findPagenated(0, 10, null, null, null, null);
 
 	for (BoardDTO board : list)
 	    log.info(board.toString());

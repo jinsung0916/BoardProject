@@ -94,8 +94,8 @@
 		<div>
 			<form id="moveToBoardListForm" method="POST" action='/myapp/board/list'>
 				<input type='hidden' name='page' value="${searchInfo.page}">
-				<input type='hidden' name='choose' value="${searchInfo.choose}">
-				<input type='hidden' name='search' value="${searchInfo.search}">
+				<input type='hidden' name='flag' value="${searchInfo.flag}">
+				<input type='hidden' name='value' value="${searchInfo.value}">
 				<input type='hidden' name='startDate' value="${searchInfo.startDate}">
 				<input type='hidden' name='endDate' value="${searchInfo.endDate}">
 				<input type='hidden' name='${_csrf.parameterName}' value="${_csrf.token}">

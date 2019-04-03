@@ -15,12 +15,12 @@ import com.joins.myapp.util.PaginationHandler;
 
 @Service
 public class BoardServiceImpl implements BoardService {
-    
+
     @Autowired
     private BoardMapper boardMapper;
     @Autowired
     private FileMapper fileMapper;
-    
+
     /**
      * 1. 개요:
      * 2. 처리내용: 게시글 PK로 게시글 하나를 조회하여 반환한다.
@@ -32,7 +32,7 @@ public class BoardServiceImpl implements BoardService {
 	BoardDTO board = boardMapper.findByNo(id);
 	return board;
     }
-    
+
     /**
      * 1. 개요:
      * 2. 처리내용: 페이징된 게시글 리스트를 반환한다.
@@ -40,26 +40,25 @@ public class BoardServiceImpl implements BoardService {
      * 4. 출력 Data: 게시글 리스트
      */
     @Override
-    public PageDTO<BoardDTO> findPaginated(int pagesPerOneLine, SearchInfoDTO searchInfo) {
-	int page = searchInfo.getPage();
-	int itemsPerPage = searchInfo.getItemsPerPage();
-	
-	// mariaDB LIMIT절 조건 설정
-	int startIdx = (page - 1) * itemsPerPage;
-	searchInfo.setStartIdx(startIdx);
-	
-	List<BoardDTO> boards = boardMapper.findPagenated(searchInfo);
-	
+    public PageDTO<BoardDTO> findPaginated(int itemsPerPage, int pagesPerOneLine, SearchInfoDTO searchInfo) {
+	int startIdx = (searchInfo.getPage() - 1) * itemsPerPage;
+	String startDate = searchInfo.getStartDate();
+	String endDate = searchInfo.getEndDate();
+	String flag = searchInfo.getFlag();
+	String value = searchInfo.getValue();
+	List<BoardDTO> boards = boardMapper.findPagenated(startIdx, itemsPerPage, startDate, endDate, flag, value);
+
 	int totalSizeOfTable = boardMapper.countAll(searchInfo);
-	PageDTO<BoardDTO> pageObj = PaginationHandler.generatePageDTO(boards, searchInfo, pagesPerOneLine, totalSizeOfTable);
+	PageDTO<BoardDTO> pageObj = PaginationHandler.generatePageDTO(boards, searchInfo, itemsPerPage, pagesPerOneLine,
+		totalSizeOfTable);
 	return pageObj;
     }
-    
+
     @Override
     public boolean hasSearchResult(SearchInfoDTO searchInfo) {
 	return boardMapper.countAll(searchInfo) != 0;
     }
-    
+
     /**
      * 1. 개요:
      * 2. 처리내용: 새로운 게시글을 생성한다.
@@ -70,7 +69,7 @@ public class BoardServiceImpl implements BoardService {
     public boolean create(BoardDTO board) {
 	return boardMapper.insert(board) == 1;
     }
-    
+
     /**
      * 1. 개요:
      * 2. 처리내용: 게시글 내용을 갱신한다.
@@ -81,7 +80,7 @@ public class BoardServiceImpl implements BoardService {
     public boolean update(BoardDTO board) {
 	return boardMapper.update(board) == 1;
     }
-    
+
     /**
      * 1. 개요:
      * 2. 처리내용: 게시글을 삭제한다.
@@ -90,10 +89,10 @@ public class BoardServiceImpl implements BoardService {
      */
     @Override
     public boolean deleteById(long id) {
-	fileMapper.deleteAll(id); 
+	fileMapper.deleteAll(id);
 	return boardMapper.delete(id) == 1;
     }
-    
+
     /**
      * 1. 개요:
      * 2. 처리내용: 새로운 첨부파일 정보를 생성한다.
@@ -104,7 +103,7 @@ public class BoardServiceImpl implements BoardService {
     public boolean attachFile(FileDTO file) {
 	return fileMapper.insert(file) == 1;
     }
-    
+
     /**
      * 1. 개요:
      * 2. 처리내용: 하나의 첨부파일 정보를 반환한다.
@@ -115,5 +114,5 @@ public class BoardServiceImpl implements BoardService {
     public FileDTO getFileByUUID(String uuid) {
 	return fileMapper.findByUUID(uuid);
     }
-    
+
 }
