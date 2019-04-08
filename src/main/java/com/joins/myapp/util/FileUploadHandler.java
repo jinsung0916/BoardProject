@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.UUID;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -106,17 +105,17 @@ public class FileUploadHandler {
      */
     private static File getSaveFilePath(File uploadFolder, String originalFileName) {
 	// 파일이름에서 확장자를 분리한다.
-	StringTokenizer strtok = new StringTokenizer(originalFileName, ".");
-	String NameOnly = strtok.nextToken();
-	String extension = strtok.nextToken();
+	int idx = originalFileName.lastIndexOf(".");
+	String nameOnly = originalFileName.substring(0, idx);
+	String extension = originalFileName.substring(idx + 1, originalFileName.length());
 
 	// 파일시스템에 저장될 실제 파일 이름을 생성한다.
-	String actualFileName = NameOnly + "." + extension;
+	String actualFileName = nameOnly + "." + extension;
 	File saveFile = new File(uploadFolder, actualFileName);
 	int cnt = 1;
 	while (saveFile.exists()) {
 	    // 이름이 중복되는 파일이 존재할 경우 이름을 변경한다.
-	    actualFileName = NameOnly + "_" + (cnt++) + "." + extension;
+	    actualFileName = nameOnly + "_" + (cnt++) + "." + extension;
 	    saveFile = new File(uploadFolder, actualFileName);
 	}
 	return saveFile;

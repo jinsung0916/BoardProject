@@ -1,6 +1,5 @@
 package com.joins.myapp.controller;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -144,16 +143,7 @@ public class BoardController {
 	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 등록 중 문제가 발생했습니다.");
 	}
 
-	ResponseEntity<String> result = null;
-	try {
-	    fileUploadProcess(board, uploadFile);
-	    result = ResponseEntity.status(HttpStatus.ACCEPTED).build();
-	} catch (Exception e) {
-	    // 파일 업로드에 실패할 경우 500을 반환한다.
-	    log.error(e.getMessage());
-	    result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 문제가 발생했습니다.");
-	}
-	return result;
+	return fileUploadProcess(board, uploadFile);
     }
 
     /**
@@ -176,16 +166,7 @@ public class BoardController {
 	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 등록 중 문제가 발생했습니다.");
 	}
 
-	ResponseEntity<String> result = null;
-	try {
-	    fileUploadProcess(board, uploadFile);
-	    result = ResponseEntity.status(HttpStatus.ACCEPTED).build();
-	} catch (Exception e) {
-	    // 파일 업로드에 실패할 경우 500을 반환한다.
-	    log.error(e.getMessage());
-	    result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 문제가 발생했습니다.");
-	}
-	return result;
+	return fileUploadProcess(board, uploadFile);
     }
 
     /**
@@ -242,25 +223,28 @@ public class BoardController {
     }
 
     /**
-     * 1. 개요: 코드 중복 제거를 위한 private 매소드
+     * 1. 개요: 코드 중복 제거를 위한 private 매서드
      * 2. 처리내용: 파일DTO에 게시글 정보를 담아 DB에 저장한다.
      * 3. 입력 Data: 게시글DTO, 업로드할 파일
      * 4. 출력 Data: 
-     * @throws IOException 
-     * @throws IllegalStateException 
      */
-    private void fileUploadProcess(BoardDTO board, MultipartFile[] uploadFile)
-	    throws IllegalStateException, IOException {
-	if (!FileUploadHandler.isEmpty(uploadFile)) {
-	    // 업로드 파일이 존재할 때
-	    List<FileDTO> list = FileUploadHandler.uploadFile(uploadFile, baseUploadDirectory,
-		    String.valueOf(board.getNo()));
-	    for (FileDTO file : list) {
-		// FileDTO에 Foreign Key 할당 후 DB에 저장한다.
-		file.setBoardNo(board.getNo());
-		service.attachFile(file);
+    private ResponseEntity<String> fileUploadProcess(BoardDTO board, MultipartFile[] uploadFile) {
+	try {
+	    if (!FileUploadHandler.isEmpty(uploadFile)) {
+		// 업로드 파일이 존재할 때
+		List<FileDTO> list = FileUploadHandler.uploadFile(uploadFile, baseUploadDirectory,
+			String.valueOf(board.getNo()));
+		for (FileDTO file : list) {
+		    // FileDTO에 Foreign Key 할당 후 DB에 저장한다.
+		    file.setBoardNo(board.getNo());
+		    service.attachFile(file);
+		}
 	    }
+	    return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+	} catch (Exception e) {
+	    // 파일 업로드에 실패할 경우 500을 반환한다.
+	    log.error(e.getMessage());
+	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 문제가 발생했습니다.");
 	}
     }
-
 }

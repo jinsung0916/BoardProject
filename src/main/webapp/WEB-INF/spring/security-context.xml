@@ -7,10 +7,7 @@
 
 	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
 	<bean id="customUserDetailService" class="com.joins.myapp.security.CustomUserDetailService"></bean>
-	<bean id="simpleUrlAuthenticationSuccessHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
-		<property name="useReferer" value="true"></property>
-	</bean>
-	
+
 	<security:http use-expressions="true">	
 	
 		<security:form-login login-page='/customLogin' default-target-url="/board/list" />
