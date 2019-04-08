@@ -5,7 +5,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Insert title here</title>
+	<title>Log in</title>
 
 	<!-- include pure.css -->
 	<link rel="stylesheet" href="/myapp/resources/css/pure-min.css">
