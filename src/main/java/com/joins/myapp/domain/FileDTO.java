@@ -4,11 +4,9 @@ import java.io.File;
 
 import org.apache.ibatis.type.Alias;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Alias("file")
 public class FileDTO {
     private String uuid;
@@ -18,6 +16,6 @@ public class FileDTO {
 
     @Override
     public String toString() {
-	return filePath + File.separator +  fileName;
+	return filePath + File.separator + fileName;
     };
 }

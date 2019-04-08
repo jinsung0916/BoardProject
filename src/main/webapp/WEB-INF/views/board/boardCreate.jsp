@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
 <!DOCTYPE html>
 <html>
 
@@ -31,7 +33,10 @@
 		<div class="pure-u-1-1">
 			<form id="boardCreateForm" method="POST" enctype="multipart/form-data" class="pure-form pure-form-stacked">
 				<fieldset>
-		
+				
+					<label for="userId">작성자</label>
+					<input id="userId" name="userId" value='<sec:authentication property="principal.username" />'  readonly>
+					
 					<label for="title">제목</label>
 					<input id="title" type="text" name="title" value="${board.title}" />
 
@@ -52,7 +57,7 @@
 							</div>
 						</div>
 					</div>
-
+					
 					<!-- 전송버튼 -->
 					<button id="uploadBtn" type="submit" class="pure-button pure-button-primary">submit</button>
 
@@ -61,11 +66,41 @@
 		</div>
 	</div>
 
-	<!-- include custom js-->
-	<script src="/myapp/resources/js/script.js"></script>
 	<script type="text/javascript">
+		/*
+		 * textarea를 활성화한다.
+		 */
 		$('#summernote').summernote('enable');
+		
+		/*
+		 * formData(multipart/form-data)를 받아 지정된 url에 ajax를 호출한다.
+		 */
+		$("#boardCreateForm").submit(function (e) {
+			e.preventDefault();
+			var newFileList = new FileList(currentListOfFile);
+			$("#file").off();
+			$("#file")[0].files = newFileList;
+			var formData = new FormData($("#boardCreateForm")[0]);
+			$.ajax({
+				url: '/myapp/board/create',
+				type: 'POST',
+				data: formData,
+				contentType: false,
+				processData: false,
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}")
+				},
+				success: function (data) {
+					// DB에서 생성 성공 시 boardList 페이지로 이동한다.
+					window.location.href = '/myapp/board/list';
+				},
+				error: function (xhr) {
+					alert(xhr.responseText);
+				}
+			});
+		});
 	</script>
+	<script src="/myapp/resources/js/script.js"></script>
 </body>
 
 </html>

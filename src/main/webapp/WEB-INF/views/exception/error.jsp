@@ -1,16 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page session="false"%>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Error Page</title>
+    <title>Home</title>
 </head>
 <body>
-  <h1>Error Page</h1>
-  <p>Application has encountered an error. Please contact support on ...</p>
-    
-    Failed URL: ${url}
-    Exception:  ${exception.message}
+    <h1>${errorMsg}</h1>
 </body>
 </html>

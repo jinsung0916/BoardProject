@@ -15,14 +15,14 @@
 			   		</if>
 				</trim>
 			</if>
-			<if test="search != null">
+			<if test="flag != null">
 				<trim prefix="AND">
 					<choose>	    	
-						<when test="choose == 'title'">
-			      			title LIKE CONCAT('%', #{search}, '%')
+						<when test="flag == 'title'">
+			      			title LIKE CONCAT('%', #{value}, '%')
 			      		</when>
-			      		<when test="choose == 'contents'">
-			      			contents LIKE CONCAT('%', #{search}, '%')
+			      		<when test="flag == 'contents'">
+			      			contents LIKE CONCAT('%', #{value}, '%')
 			      		</when> 
 					</choose>
 				</trim>
@@ -35,6 +35,7 @@
 		<result property="title" column="board_title"/>
 		<result property="contents" column="board_contents"/>
 		<result property="regDate" column="board_regDate"/>
+		<result property="userId" column="board_userId"/>
 		<collection property="fileList" javaType="ArrayList" ofType="file">
 			<id property="uuid" column="file_uuid"/>
 			<result property="fileName" column="file_fileName"/>
@@ -47,6 +48,7 @@
         	   b.title 		as board_title,
         	   b.contents 	as board_contents,
         	   b.regDate 	as board_regDate,
+        	   b.userId     as board_userId,
         	   f.uuid 		as file_uuid,
         	   f.fileName 	as file_fileName,
         	   f.filePath 	as file_filePath
@@ -56,8 +58,8 @@
         where b.no = #{no}
     </select>
     	
-	<select id="findPagenated" parameterType="searchInfo" resultType="board">
-		SELECT no, title, regDate 
+	<select id="findPagenated" resultType="board">
+		SELECT no, title, regDate, userId 
     	FROM board
 		<where>
 			<if test="startDate != null and endDate !=null">
@@ -70,26 +72,26 @@
 			   		</if>
 				</trim>
 			</if>
-			<if test="search != null">
+			<if test="flag != null">
 				<trim prefix="AND">
 					<choose>	    	
-						<when test="choose == 'title'">
-			      			title LIKE CONCAT('%', #{search}, '%')
+						<when test="flag == 'title'">
+			      			title LIKE CONCAT('%', #{value}, '%')
 			      		</when>
-			      		<when test="choose == 'contents'">
-			      			contents LIKE CONCAT('%', #{search}, '%')
+			      		<when test="flag== 'contents'">
+			      			contents LIKE CONCAT('%', #{value}, '%')
 			      		</when> 
 					</choose>
 				</trim>
 			</if>
 		</where>
 		ORDER BY no DESC 
-		LIMIT #{startIdx}, #{itemsPerPage}
+		LIMIT #{offset}, #{rowCount}
     </select>
 	
 	<insert id="insert" parameterType="board" useGeneratedKeys="true" keyProperty="no" keyColumn="NO">
-        INSERT INTO board (title, contents, regDate)
-        VALUES (#{title}, #{contents}, #{regDate})
+        INSERT INTO board (title, contents, regDate, userId)
+        VALUES (#{title}, #{contents}, #{regDate}, #{userId})
     </insert>
     
     <update id="update" parameterType="board">

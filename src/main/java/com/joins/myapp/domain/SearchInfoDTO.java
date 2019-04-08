@@ -2,25 +2,17 @@ package com.joins.myapp.domain;
 
 import org.apache.ibatis.type.Alias;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Alias("searchInfo")
 public class SearchInfoDTO {
     // 게시판 검색 조건
-    private String choose;
-    private String search;
+    private String flag;
+    private String value;
     private String startDate;
     private String endDate;
-    
-    // 페이징 처리 조건
+
+    // 현재 페이지 정보 
     private int page;
-    private int itemsPerPage;
-    
-    // MariaDB LIMIT절 조건
-    private int startIdx;
 }
