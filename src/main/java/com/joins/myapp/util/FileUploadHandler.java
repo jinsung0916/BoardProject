@@ -27,12 +27,9 @@ public class FileUploadHandler {
      */
     public static boolean isEmpty(MultipartFile[] uploadFile) {
 	if (uploadFile.length > 0) {
-	    // 업로드한 파일이 존재하나 실질적으로 존재하지 않을 때
 	    return uploadFile[0].getSize() == 0;
-	} else {
-	    // 업로드한 파일이 존재하지 않을 때
-	    return false;
 	}
+	return false;
     }
 
     /**
@@ -46,18 +43,17 @@ public class FileUploadHandler {
     public static List<FileDTO> uploadFile(MultipartFile[] uploadFile, String baseUploadDirectory, String folderName)
 	    throws IllegalStateException, IOException {
 	List<FileDTO> files = new ArrayList<FileDTO>();
-	File uploadFolder = getPath(baseUploadDirectory, folderName);
+	File uploadFolder = getUploadFolder(baseUploadDirectory, folderName);
 	for (MultipartFile multipartFile : uploadFile) {
 	    // 업로드할 개별 파일의 경로와 이름을 지정하고 파일시스템에 저장한다.
-
 	    log.info("upload file...");
 	    log.info("Upload File Name: " + multipartFile.getOriginalFilename());
 	    log.info("Upload File Size: " + multipartFile.getSize());
 
 	    String originalFileName = getOriginalFileName(multipartFile);
-	    File saveFile = getSaveFilePath(uploadFolder, originalFileName);
-
+	    File saveFile = getSaveFileObj(uploadFolder, originalFileName);
 	    multipartFile.transferTo(saveFile);
+
 	    FileDTO file = new FileDTO();
 	    file.setUuid(UUID.randomUUID().toString());
 	    file.setFileName(saveFile.getName());
@@ -73,14 +69,13 @@ public class FileUploadHandler {
      * 3. 입력 Data: 파일을 저장할 루트 경로, 게시글 번호
      * 4. 출력 Data: 파일 저장 경로 
      */
-    private static File getPath(String baseUploadDirectory, String folderName) {
+    private static File getUploadFolder(String baseUploadDirectory, String folderName) {
 	File uploadFolder = new File(baseUploadDirectory, folderName);
 
 	if (!uploadFolder.exists()) {
 	    // 경로가 존재하지 않을 경우 새로운 디렉토리를 생성한다.
 	    uploadFolder.mkdirs();
 	}
-
 	return uploadFolder;
     }
 
@@ -99,24 +94,31 @@ public class FileUploadHandler {
 
     /**
      * 1. 개요:
-     * 2. 처리내용: 파일시스템에 저장될 실제 파일 이름으로 File 객체를 생성한다.
+     * 2. 처리내용: 최종적으로 업로드할 위치의 File 객체를 반환한다.
      * 3. 입력 Data: 업로드할 폴더의 File 객체, 기존 파일 이름
      * 4. 출력 Data: File 객체
      */
-    private static File getSaveFilePath(File uploadFolder, String originalFileName) {
+    private static File getSaveFileObj(File uploadFolder, String originalFileName) {
 	// 파일이름에서 확장자를 분리한다.
 	int idx = originalFileName.lastIndexOf(".");
 	String nameOnly = originalFileName.substring(0, idx);
 	String extension = originalFileName.substring(idx + 1, originalFileName.length());
 
-	// 파일시스템에 저장될 실제 파일 이름을 생성한다.
-	String actualFileName = nameOnly + "." + extension;
-	File saveFile = new File(uploadFolder, actualFileName);
+	return handleDuplicateFile(uploadFolder, nameOnly, extension);
+    }
+
+    /**
+     * 1. 개요:
+     * 2. 처리내용: 중복 파일이 존재할 경우 이름을 변경한다.
+     * 3. 입력 Data:
+     * 4. 출력 Data: 
+     */
+    private static File handleDuplicateFile(File uploadFolder, String nameOnly, String extension) {
+	File saveFile = new File(uploadFolder, nameOnly + "." + extension);
 	int cnt = 1;
 	while (saveFile.exists()) {
 	    // 이름이 중복되는 파일이 존재할 경우 이름을 변경한다.
-	    actualFileName = nameOnly + "_" + (cnt++) + "." + extension;
-	    saveFile = new File(uploadFolder, actualFileName);
+	    saveFile = new File(uploadFolder, nameOnly + "_" + (cnt++) + "." + extension);
 	}
 	return saveFile;
     }

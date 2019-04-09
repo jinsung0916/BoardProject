@@ -143,7 +143,7 @@ public class BoardController {
 	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 등록 중 문제가 발생했습니다.");
 	}
 
-	return fileUploadProcess(board, uploadFile);
+	return processFileUpload(board, uploadFile);
     }
 
     /**
@@ -166,7 +166,7 @@ public class BoardController {
 	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 등록 중 문제가 발생했습니다.");
 	}
 
-	return fileUploadProcess(board, uploadFile);
+	return processFileUpload(board, uploadFile);
     }
 
     /**
@@ -228,23 +228,28 @@ public class BoardController {
      * 3. 입력 Data: 게시글DTO, 업로드할 파일
      * 4. 출력 Data: 
      */
-    private ResponseEntity<String> fileUploadProcess(BoardDTO board, MultipartFile[] uploadFile) {
-	try {
-	    if (!FileUploadHandler.isEmpty(uploadFile)) {
-		// 업로드 파일이 존재할 때
-		List<FileDTO> list = FileUploadHandler.uploadFile(uploadFile, baseUploadDirectory,
+    private ResponseEntity<String> processFileUpload(BoardDTO board, MultipartFile[] uploadFile) {
+	if (!FileUploadHandler.isEmpty(uploadFile)) {
+	    // 업로드 파일이 존재할 때
+	    try {
+		List<FileDTO> fileList = FileUploadHandler.uploadFile(uploadFile, baseUploadDirectory,
 			String.valueOf(board.getNo()));
-		for (FileDTO file : list) {
-		    // FileDTO에 Foreign Key 할당 후 DB에 저장한다.
-		    file.setBoardNo(board.getNo());
-		    service.attachFile(file);
-		}
+		setForeignKeyToFileDTO(fileList, board);
+	    } catch (Exception e) {
+		// 파일 업로드에 실패할 경우 500을 반환한다.
+		log.error(e.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 문제가 발생했습니다.");
 	    }
-	    return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-	} catch (Exception e) {
-	    // 파일 업로드에 실패할 경우 500을 반환한다.
-	    log.error(e.getMessage());
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 문제가 발생했습니다.");
+	}
+	return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    private void setForeignKeyToFileDTO(List<FileDTO> fileList, BoardDTO board) {
+	for (FileDTO file : fileList) {
+	    // FileDTO에 Foreign Key 할당 후 DB에 저장한다.
+	    file.setBoardNo(board.getNo());
+	    service.attachFile(file);
 	}
     }
+
 }
