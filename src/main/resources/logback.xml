@@ -3,7 +3,7 @@
 	
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-	        <fileNamePattern>D:\\logs\\boardProject\\log-%d{yyyy-MM-dd}.log</fileNamePattern>
+	        <fileNamePattern>C:\\Users\\joins\\Documents\\eclipse_workspace\\logs\\boardProject\\log-%d{yyyy-MM-dd}.log</fileNamePattern>
 	        <maxHistory>30</maxHistory> 
 	        <totalSizeCap>3GB</totalSizeCap>
 	    </rollingPolicy>

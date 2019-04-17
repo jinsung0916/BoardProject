@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +28,6 @@ import com.joins.myapp.domain.SearchInfoDTO;
 import com.joins.myapp.service.BoardService;
 import com.joins.myapp.util.FileDeleteHandler;
 import com.joins.myapp.util.FileDownloadHandler;
-import com.joins.myapp.util.FileUploadHandler;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,8 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/board")
 @Slf4j
 public class BoardController {
-    @Value("#{file['baseUploadDirectory']}")
-    private String baseUploadDirectory;
+
     @Value("#{pagination['defaultPage']}")
     private int defaultPage;
     @Value("#{pagination['defaultItemsPerPage']}")
@@ -49,6 +48,14 @@ public class BoardController {
 
     @Autowired
     private BoardService service;
+
+    @Autowired
+    @Qualifier("boardCreateProcess")
+    private BoardCreateAndUpdateTemplate createProcess;
+
+    @Autowired
+    @Qualifier("boardUpdateProcess")
+    private BoardCreateAndUpdateTemplate updateProcess;
 
     /**
      * 1. 개요: POST /board/search
@@ -132,18 +139,7 @@ public class BoardController {
     @PostMapping(value = "/create", produces = "text/plain;charset=UTF-8")
     @PreAuthorize("isAuthenticated()")
     public @ResponseBody ResponseEntity<String> boardCreate(BoardDTO board, MultipartFile[] uploadFile) {
-	if ("".equals(board.getTitle())) {
-	    // 게시글 제목이 존재하지 않을 경우 400을 반환한다.
-	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목이 존재하지 않습니다.");
-	}
-
-	if (!service.create(board)) {
-	    // DB에서 INSERT가 실패할 경우 500을 반환한다.
-	    log.error("게시글 생성 실패");
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 등록 중 문제가 발생했습니다.");
-	}
-
-	return processFileUpload(board, uploadFile);
+	return createProcess.execute(board, uploadFile);
     }
 
     /**
@@ -155,18 +151,7 @@ public class BoardController {
     @PostMapping(value = "/update", produces = "text/plain;charset=UTF-8")
     @PreAuthorize("#board.userId == principal.username")
     public @ResponseBody ResponseEntity<String> boardUpdate(BoardDTO board, MultipartFile[] uploadFile) {
-	if ("".equals(board.getTitle())) {
-	    // 게시글 제목이 존재하지 않을 경우 400을 반환한다.
-	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목을 입력하세요.");
-	}
-
-	if (!service.update(board)) {
-	    // DB에서 UPDATE가 실패할 경우 500을 반환한다.
-	    log.error("게시글 갱신 실패");
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시글 등록 중 문제가 발생했습니다.");
-	}
-
-	return processFileUpload(board, uploadFile);
+	return updateProcess.execute(board, uploadFile);
     }
 
     /**
@@ -220,36 +205,6 @@ public class BoardController {
 	    log.error(e.getMessage());
 	}
 	return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
-    }
-
-    /**
-     * 1. 개요: 코드 중복 제거를 위한 private 매서드
-     * 2. 처리내용: 파일DTO에 게시글 정보를 담아 DB에 저장한다.
-     * 3. 입력 Data: 게시글DTO, 업로드할 파일
-     * 4. 출력 Data: 
-     */
-    private ResponseEntity<String> processFileUpload(BoardDTO board, MultipartFile[] uploadFile) {
-	if (!FileUploadHandler.isEmpty(uploadFile)) {
-	    // 업로드 파일이 존재할 때
-	    try {
-		List<FileDTO> fileList = FileUploadHandler.uploadFile(uploadFile, baseUploadDirectory,
-			String.valueOf(board.getNo()));
-		setForeignKeyToFileDTO(fileList, board);
-	    } catch (Exception e) {
-		// 파일 업로드에 실패할 경우 500을 반환한다.
-		log.error(e.getMessage());
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 문제가 발생했습니다.");
-	    }
-	}
-	return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-    }
-
-    private void setForeignKeyToFileDTO(List<FileDTO> fileList, BoardDTO board) {
-	for (FileDTO file : fileList) {
-	    // FileDTO에 Foreign Key 할당 후 DB에 저장한다.
-	    file.setBoardNo(board.getNo());
-	    service.attachFile(file);
-	}
     }
 
 }

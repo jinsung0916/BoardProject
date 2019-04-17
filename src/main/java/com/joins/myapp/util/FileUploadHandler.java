@@ -40,13 +40,14 @@ public class FileUploadHandler {
      * @throws IOException 
      * @throws IllegalStateException 
      */
-    public static List<FileDTO> uploadFile(MultipartFile[] uploadFile, String baseUploadDirectory, String folderName)
-	    throws IllegalStateException, IOException {
+    public static List<FileDTO> uploadFile(MultipartFile[] uploadFile, String baseUploadDirectory,
+	    FolderNameStrategy strategy) throws IllegalStateException, IOException {
 	List<FileDTO> files = new ArrayList<FileDTO>();
-	File uploadFolder = getUploadFolder(baseUploadDirectory, folderName);
+	File uploadFolder = getUploadFolder(baseUploadDirectory, strategy.getFolderName());
 	for (MultipartFile multipartFile : uploadFile) {
 	    // 업로드할 개별 파일의 경로와 이름을 지정하고 파일시스템에 저장한다.
 	    log.info("upload file...");
+	    log.info("Upload File Directory: " + uploadFolder.getAbsolutePath());
 	    log.info("Upload File Name: " + multipartFile.getOriginalFilename());
 	    log.info("Upload File Size: " + multipartFile.getSize());
 
